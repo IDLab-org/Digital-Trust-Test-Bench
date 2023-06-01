@@ -1,0 +1,11 @@
+---
+namespace: "dtt-core"
+domain: "dtt-dev.idlab.app"
+
+frontend:
+  name: dtt-frontend
+  endpoint: client
+  port: 5000
+  redis_port: 6379
+
+

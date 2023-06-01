@@ -1,0 +1,18 @@
+<html lang="en">
+{% include 'layouts/head.jinja' %}
+
+<body class=" d-flex flex-column">
+    {# <script src="./dist/js/demo-theme.min.js?1684106145"></script> #}
+    <div class="page page-center">
+        {# {% include 'layouts/header.jinja' %} #}
+        {% block page %}{% endblock%}
+        {# {% include 'layouts/footer.jinja' %} #}
+    </div>
+    <!-- Libs JS -->
+    <!-- Tabler Core -->
+    <script src="{{ url_for('static', filename='tabler.min.js') }}" defer=""></script>
+    {# <script src="./dist/js/demo.min.js?1684106145" defer=""></script> #}
+
+</body>
+
+</html>
