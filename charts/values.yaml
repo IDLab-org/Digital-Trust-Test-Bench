@@ -1,11 +1,10 @@
 ---
-namespace: "dtt-core"
+namespace: "dtt-dev"
 domain: "dtt-dev.idlab.app"
 
 frontend:
   name: dtt-frontend
-  endpoint: client
+  endpoint: client.dtt-dev.idlab.app
+  image: idlaborg/dtt-frontend:latest
   port: 5000
-  redis_port: 6379
-
-
+  secret_key: '${{ secrets.SECRET_KEY }}'
