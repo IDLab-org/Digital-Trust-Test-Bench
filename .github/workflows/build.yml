@@ -44,7 +44,6 @@ jobs:
     steps:
       - name: 'Deploy'
         uses: 'deliverybot/helm@master'
-        working-directory: ./charts
         with:
           secrets: '${{ toJSON(secrets) }}'
           chart: 'charts/dtt-frontend'
