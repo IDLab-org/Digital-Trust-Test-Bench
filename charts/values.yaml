@@ -5,6 +5,7 @@ domain: "dtt-dev.idlab.app"
 frontend:
   name: dtt-frontend
   endpoint: client.dtt-dev.idlab.app
-  image: idlaborg/dtt-frontend:latest
+  image: 
+    name: idlaborg/dtt-frontend
   port: 5000
   secret_key: '${{ secrets.SECRET_KEY }}'
