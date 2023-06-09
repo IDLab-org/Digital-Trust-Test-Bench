@@ -13,8 +13,6 @@ jobs:
   # build:
   #   runs-on: self-hosted
   #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
   #     - name: Set up QEMU
   #       uses: docker/setup-qemu-action@v2
   #     - name: Set up Docker Context for Buildx
@@ -39,13 +37,14 @@ jobs:
   #         file: ./Dockerfile
   #         push: true
   #         tags: ${{ env.LATEST_TAG }}
+
   deploy:
     runs-on: self-hosted
     steps:
-      - name: Download repository
-        uses: actions/download-artifact@v2
-        with:
-          name: repository
+      # - name: Download repository
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: repository
       - name: Create kube config
         run: |
           mkdir -p $HOME/.kube/
@@ -57,13 +56,13 @@ jobs:
           tar -zxvf helm-v3.8.0-linux-amd64.tar.gz
           mv linux-amd64/helm /usr/local/bin/helm
           helm version
-      - name: Lint helm charts
-        run: helm lint ./charts/
-      - name: Deploy
-        run: |
-          helm upgrade --install --atomic --timeout 1m \
-            dtt-frontend ./charts/ -f ./charts/values.yaml \
-            --namespace dtt-dev --create-namespace
+      # - name: Lint helm charts
+      #   run: helm lint ./charts/
+      # - name: Deploy
+      #   run: |
+      #     helm upgrade --install --atomic --timeout 1m \
+      #       dtt-frontend ./charts/ -f ./charts/values.yaml \
+      #       --namespace dtt-dev --create-namespace
 
 
 
