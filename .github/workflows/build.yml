@@ -61,11 +61,11 @@ jobs:
           helm version
       - name: Lint helm charts
         run: helm lint ./charts/
-      # - name: Deploy
-      #   run: |
-      #     helm upgrade --install --atomic --timeout 1m \
-      #       dtt-frontend ./charts/ -f ./charts/values.yaml \
-      #       --namespace dtt-dev --create-namespace
+      - name: Deploy
+        run: |
+          helm upgrade --install --atomic --timeout 1m \
+            dtt-frontend ./charts/ -f ./charts/values.yaml \
+            --namespace dtt-dev --create-namespace
 
 
 
