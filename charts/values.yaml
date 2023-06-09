@@ -7,5 +7,6 @@ frontend:
   endpoint: client.dtt-dev.idlab.app
   image: 
     name: idlaborg/dtt-frontend
+    tag: ""
   port: 5000
   secret_key: '${{ secrets.SECRET_KEY }}'
