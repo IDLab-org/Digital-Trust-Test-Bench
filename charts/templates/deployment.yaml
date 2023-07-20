@@ -1,0 +1,33 @@
+---
+{{- with .Values.frontend }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: {{ .name }}
+  labels:
+    app: {{ .name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      containers:
+      - name: {{ .name }}
+        image: "{{ .image.name }}:{{ .image.tag }}"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .port }}
+        envFrom:
+        - secretRef:
+            name: {{ .name }}-env
+        - configMapRef:
+            name: {{ .name }}-env
+      imagePullSecrets:
+      - name: regcred
+{{- end }}

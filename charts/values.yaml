@@ -1,0 +1,11 @@
+---
+namespace: "dtt-dev"
+domain: "dtt-dev.idlab.app"
+
+service:
+  name: dtt-service
+  endpoint: api.dtt-dev.idlab.app
+  image: 
+    name: idlaborg/dtt-service
+    tag: ""
+  port: 8000
