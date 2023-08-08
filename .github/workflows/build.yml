@@ -3,7 +3,7 @@ name: build
 on:
   push:
     branches:
-      - "main"
+      - "DTT-*"
 
 env:
   TEST_TAG: ${{ secrets.DOCKERHUB_USERNAME }}/dtt-service:test
