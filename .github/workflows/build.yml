@@ -64,14 +64,3 @@ jobs:
             dtt-service ./charts/ -f ./charts/values.yaml \
             --namespace dtt-dev --create-namespace \
             --set image.tag=${{ env.TEST_TAG }}
-
-      # - name: 'Deploy'
-      #   uses: 'deliverybot/helm@master'
-      #   with:
-      #     secrets: '${{ toJSON(secrets) }}'
-      #     chart: 'charts/dtt-service'
-      #     namespace: dtt-dev
-      #     release: dtt-service
-      #     value-files: './values.yaml'
-      #   env:
-      #     KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'
