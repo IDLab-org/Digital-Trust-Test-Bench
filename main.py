@@ -13,5 +13,6 @@ app = FastAPI(
 )
 
 api_router = APIRouter()
+api_router.include_router(authentication.router)
 
 app.include_router(api_router)
