@@ -35,9 +35,7 @@ jobs:
             -p ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Docker Build
         run: |
-          docker build . \
-            --file Dockerfile \
-            --tag ${{ env.TEST_TAG }}
+          docker build . --file Dockerfile --tag ${{ env.TEST_TAG }}
       - name: Docker Push
         run: |
           docker push ${{ env.TEST_TAG }}
