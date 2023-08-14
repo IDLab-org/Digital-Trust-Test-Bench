@@ -16,8 +16,8 @@ class Settings(BaseSettings):
         "url": "https://idlab.org",
     }
     PROJECT_LICENSE_INFO = {
-        "name": "Undefined",
-        "url": "",
+        "name": "DTT-Service",
+        "url": "https://github.com/IDLab-org/DTT-Service",
     }
 
     DEMO_USER = {
