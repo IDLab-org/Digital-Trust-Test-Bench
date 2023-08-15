@@ -64,6 +64,18 @@ jobs:
             dtt-frontend ./charts/ -f ./charts/values.yaml \
             --namespace dtt-dev --create-namespace \
             --set image.tag=${{ env.TEST_TAG }}
+      - name: Update deployment status (success)
+        if: success()
+        uses: chrnorm/deployment-status@releases/v3
+        with:
+          token: '${{ github.token }}'
+          state: 'success'
+      - name: Update deployment status (failure)
+        if: failure()
+        uses: chrnorm/deployment-status@releases/v3
+        with:
+          token: '${{ github.token }}'
+          state: 'failure'
 
       # - name: 'Deploy'
       #   uses: 'deliverybot/helm@master'
