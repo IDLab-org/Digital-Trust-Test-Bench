@@ -6,4 +6,4 @@ def test_sum():
     assert truediv
 
 def test_sum_tuple():
-    assert sum((1, 2, 2)) == 6, "Should be 6"
+    assert sum((2, 2, 2)) == 6, "Should be 6"
