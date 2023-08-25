@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     }
     PROJECT_LICENSE_INFO = {
         "name": "Undefined",
-        "url": "https://example.com/",
+        "url": "https://example.com/"
     }
     DEMO_USER = {
         "username": "demo.user",
