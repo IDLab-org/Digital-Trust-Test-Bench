@@ -3,7 +3,7 @@ name: build
 on:
   push:
     branches:
-      - "main"
+      - "DTT-*"
 
 env:
   TEST_TAG: ${{ secrets.DOCKERHUB_USERNAME }}/dtt-service:test
@@ -15,30 +15,38 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-      - name: Set up Docker Context for Buildx
-        id: buildx-context
+#       - name: Set up QEMU
+#         uses: docker/setup-qemu-action@v2
+#       - name: Set up Docker Context for Buildx
+#         id: buildx-context
+#         run: |
+#           docker context create builders
+#       - name: Set up Docker Buildx
+#         uses: docker/setup-buildx-action@v2
+#       - name: Login to Docker Hub
+#         uses: docker/login-action@v2
+#         with:
+#           username: ${{ secrets.DOCKERHUB_USERNAME }}
+#           password: ${{ secrets.DOCKERHUB_TOKEN }}
+#       - name: Build and push
+#         uses: docker/build-push-action@v4
+#         with:
+#           context: .
+#           file: ./Dockerfile
+#           push: true
+#           tags: ${{ env.TEST_TAG }}
+      - name: Docker Login
         run: |
-          docker context create builders
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          version: latest
-          endpoint: builders
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ env.TEST_TAG }}
+          docker login \
+            -u ${{ secrets.DOCKERHUB_USERNAME }} \
+            -p ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Docker Build
+        run: |
+          docker build . --file Dockerfile --tag ${{ env.TEST_TAG }}
+      - name: Docker Push
+        run: |
+          docker push ${{ env.TEST_TAG }}
+
   deploy:
     needs: [build]
     runs-on: self-hosted
@@ -64,14 +72,3 @@ jobs:
             dtt-service ./charts/ -f ./charts/values.yaml \
             --namespace dtt-dev --create-namespace \
             --set image.tag=${{ env.TEST_TAG }}
-
-      # - name: 'Deploy'
-      #   uses: 'deliverybot/helm@master'
-      #   with:
-      #     secrets: '${{ toJSON(secrets) }}'
-      #     chart: 'charts/dtt-service'
-      #     namespace: dtt-dev
-      #     release: dtt-service
-      #     value-files: './values.yaml'
-      #   env:
-      #     KUBECONFIG_FILE: '${{ secrets.KUBECONFIG }}'

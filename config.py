@@ -9,17 +9,16 @@ class Settings(BaseSettings):
     PROJECT_TITLE = "DTT API Service"
     PROJECT_VERSION = "v0"
     PROJECT_DESCRIPTION = """
-    API service for the DDT platform
+    API service for the DTT platform
     """
     PROJECT_CONTACT = {
         "name": "IDLab",
         "url": "https://idlab.org",
     }
     PROJECT_LICENSE_INFO = {
-        "name": "DTT-Service",
-        "url": "https://github.com/IDLab-org/DTT-Service",
+        "name": "Undefined",
+        "url": "https://example.com/"
     }
-
     DEMO_USER = {
         "username": "demo.user",
         "password": "password123"
