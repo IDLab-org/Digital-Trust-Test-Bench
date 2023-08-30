@@ -9,3 +9,4 @@ class Config(object):
     DEBUG = os.environ["DEBUG"]
     TESTING = os.environ["TESTING"]
     SECRET_KEY = os.environ["SECRET_KEY"]
+    DTT_SERVICE_URL = os.environ["DTT_SERVICE_URL"]

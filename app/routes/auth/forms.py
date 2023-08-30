@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms.widgets import CheckboxInput, ListWidget
+from wtforms import validators
 from wtforms import (
     StringField,
     HiddenField,
@@ -10,17 +11,23 @@ from wtforms import (
     BooleanField,
     SelectField,
     RadioField,
-)
-from wtforms.validators import DataRequired, Length
+    PasswordField,
+    EmailField,
+    )
+from wtforms.validators import DataRequired, Length, InputRequired
+from email_validator import validate_email, EmailNotValidError
+
 
 class MultiCheckboxField(SelectMultipleField):
     widget = ListWidget(prefix_label=False)
     option_widget = CheckboxInput()
 
+
 class BasicLoginForm(FlaskForm):
-    username = StringField("Username", validators=[DataRequired()])
-    password = StringField("Password", validators=[DataRequired()])
+    email = EmailField("Email Address", [validators.DataRequired(), validators.Email("Enter a valid email address")])
+    password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Submit")
+
 
 class VCLoginForm(FlaskForm):
     submit = SubmitField("Submit")

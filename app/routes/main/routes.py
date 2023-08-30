@@ -2,16 +2,13 @@ from flask import current_app, render_template, url_for, redirect, session, requ
 from app.routes.main import bp
 import json, requests, secrets, base64
 from pprint import pprint
+from app.utils.session_check import Session_check
 
 @bp.before_request
 def before_request_callback():
-    if "online" not in session or not session["online"]:
-        session['invitation'] = "https://xyz"
+  if not Session_check.check_online(session):
         return redirect(url_for("auth.logout"))
 
 @bp.route("/", methods=["GET", "POST"])
 def index():
-    return render_template(
-        "pages/auth.jinja", 
-        title="Demo"
-        )
+    return redirect(url_for("auth.login"))
