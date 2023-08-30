@@ -20,7 +20,7 @@ class Settings(BaseSettings):
         "url": "https://example.com/"
     }
     DEMO_USER = {
-        "username": "demo.user",
+        "email": "user@example.com",
         "password": "password123"
     }
 

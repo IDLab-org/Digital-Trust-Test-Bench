@@ -5,6 +5,6 @@ from config import settings
 
 
 class BasicLoginInput(BaseModel):
-    username: str = Field(example="demo.user")
+    email: str = Field(example="user@abc.com")
     password: str = Field(example="password123")
 
