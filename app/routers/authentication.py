@@ -15,7 +15,7 @@ router = APIRouter()
 async def basic_login(basic_login_input: BasicLoginInput):
     email = vars(basic_login_input)["email"]
     password = vars(basic_login_input)["password"]
-    if (username, password) == \
-        (settings.DEMO_USER["username"], settings.DEMO_USER["password"]):
+    if (email, password) == \
+        (settings.DEMO_USER["email"], settings.DEMO_USER["password"]):
             return True
     return False
