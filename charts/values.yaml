@@ -1,12 +1,38 @@
 ---
-namespace: "dtt-dev"
-domain: "dtt-dev.idlab.app"
+# Namespace where this application is deployed
+namespace: dtt-dev
 
-frontend:
-  name: dtt-frontend
-  endpoint: client.dtt-dev.idlab.app
+# Name of the application
+app_name: dtt-frontend
+
+# Deployment configuration for the application
+deployment:
+  # Docker image name & tag (tag is overwritten during pipeline)
   image: 
     name: idlaborg/dtt-frontend
-    tag: ""
+    tag: change_me
   port: 5000
-  secret_key: '${{ secrets.SECRET_KEY }}'
+
+# Service configuration for the application
+service:
+  # Metallb assigned address
+  load_balancer_ip: 10.0.20.224
+  port: 5000
+
+# Ingress for app endpoint
+ingress:
+  domain: dtt-dev.idlab.app
+  subdomain: client
+
+# Configmap and secret to be loaded as environment variables in the application
+environment:
+  variables:
+    ENV: production
+    DEBUG: False
+    TESTING: False
+    DTT_SERVICE_URL: http://dtt-service-svc:8000/
+    # Overwritten with image tag during pipeline
+    VERSION: ChangeMe
+  secrets:
+    # Fetched from github repo settings
+    SECRET_KEY: '${{ secrets.SECRET_KEY }}'

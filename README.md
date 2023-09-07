@@ -1,30 +1,38 @@
 # DTT-Frontend
 
 Front End app for the DTT Bench
-Currently an empty implementation with only a few routes
 
-### Running locally
-A -setup a virtual environment (if not done already)
-    (From the .../DTT-Frontend folder)
-    $ python3 -m venv venv
-    
-B - Update dependencies:
-    $ source venv/bin/activate  
-    $ pip3 install -r requirements.txt
+## Running locally
+Pre-requisites:
+- python3.11
+- python3.11-venv
 
-C - Setup environment:
-    $ source venv/bin/activate  (if not already activated)
-    $ export FLASK_APP=start
+### Setting up a virtual environment & install dependencies
+```
+python3.11 -m venv venv
+. venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
 
-D - Create the .env file (if not already done)
-    Use .env.example as a starting point,. copy into a file called .env
-    Fill-up values and save
-            # Environment / Development settings
-            ENV=development
-            DEBUG=true
-            TESTING=true
-            SECRET_KEY="ToBeModified"
-            DTT_SERVICE_URL="http://localhost:8000"  # (Assumed to point to a local version of the DTT service - no trailing slash)
+```
 
-E - Run the app in debug mode:
-    $ flask run --debug
+### Create local .env file and fill in values
+```cp .env.example .env```
+
+Example values:
+```
+ENV=development
+DEBUG=true
+TESTING=true
+SECRET_KEY=my_s3cret_key
+DTT_SERVICE_URL=http://localhost:8000 # Use a running DTT-Service instance
+```
+
+### Run the application
+```python start.py```
+
+- The application will be running at [http://localhost:5000](http://localhost:5000)
+
+### DTT-DEV Internal Endpoints
+- DTT-Frontend: [http://dtt-dev.internal.idlab.org:5000](http://dtt-dev.internal.idlab.org:5000)
+- DTT-Service: [http://dtt-dev.internal.idlab.org:8000](http://dtt-dev.internal.idlab.org:8000)
