@@ -1,11 +1,23 @@
 ---
-namespace: "dtt-dev"
-domain: "dtt-dev.idlab.app"
+namespace: dtt-dev
+app_name: dtt-service
 
-service:
-  name: dtt-service
-  endpoint: api.dtt-dev.idlab.app
+deployment:
   image: 
     name: idlaborg/dtt-service
-    tag: ""
+    tag: change_me
   port: 8000
+
+service:
+  load_balancer_ip: 10.0.20.225
+  port: 8000
+
+ingress:
+  domain: dtt-dev.idlab.app
+  subdomain: service
+
+environment:
+  variables:
+    PLACEHOLDER: "PLACEHOLDER"
+  secrets:
+    PLACEHOLDER: "PLACEHOLDER"

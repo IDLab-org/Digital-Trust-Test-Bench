@@ -3,11 +3,10 @@ name: build
 on:
   push:
     branches:
-      - "DTT-*"
+      - "main"
 
 env:
-  TEST_TAG: ${{ secrets.DOCKERHUB_USERNAME }}/dtt-service:test
-  LATEST_TAG: ${{ secrets.DOCKERHUB_USERNAME }}/dtt-service:latest
+  DEV_TAG: ${{ secrets.DOCKERHUB_USERNAME }}/dtt-service:dev-${{ github.run_id }}
 
 jobs:
   build:
@@ -15,26 +14,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-#       - name: Set up QEMU
-#         uses: docker/setup-qemu-action@v2
-#       - name: Set up Docker Context for Buildx
-#         id: buildx-context
-#         run: |
-#           docker context create builders
-#       - name: Set up Docker Buildx
-#         uses: docker/setup-buildx-action@v2
-#       - name: Login to Docker Hub
-#         uses: docker/login-action@v2
-#         with:
-#           username: ${{ secrets.DOCKERHUB_USERNAME }}
-#           password: ${{ secrets.DOCKERHUB_TOKEN }}
-#       - name: Build and push
-#         uses: docker/build-push-action@v4
-#         with:
-#           context: .
-#           file: ./Dockerfile
-#           push: true
-#           tags: ${{ env.TEST_TAG }}
       - name: Docker Login
         run: |
           docker login \
@@ -42,15 +21,28 @@ jobs:
             -p ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Docker Build
         run: |
-          docker build . --file Dockerfile --tag ${{ env.TEST_TAG }}
+          docker build . --tag ${{ env.DEV_TAG }}
       - name: Docker Push
         run: |
-          docker push ${{ env.TEST_TAG }}
+          docker push ${{ env.DEV_TAG }}
 
   deploy:
     needs: [build]
     runs-on: self-hosted
     steps:
+      - uses: chrnorm/deployment-action@v2
+        name: Create GitHub deployment
+        id: deployment
+        with:
+          token: '${{ github.token }}'
+          environment: development
+      - name: Update deployment status
+        uses: chrnorm/deployment-status@v2
+        if: always()
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          state: ${{ job.status }}
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
       - name: Checkout
         uses: actions/checkout@v3
       - name: Create kube config
@@ -71,4 +63,11 @@ jobs:
           helm upgrade --install --atomic --timeout 2m \
             dtt-service ./charts/ -f ./charts/values.yaml \
             --namespace dtt-dev --create-namespace \
-            --set image.tag=${{ env.TEST_TAG }}
+            --set deployment.image.tag=dev-${{ github.run_id }}
+      - name: Update deployment status
+        uses: chrnorm/deployment-status@v2
+        if: always()
+        with:
+          token: '${{ secrets.GITHUB_TOKEN }}'
+          state: ${{ job.status }}
+          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
