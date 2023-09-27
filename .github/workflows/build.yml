@@ -3,6 +3,7 @@ name: build
 on:
   push:
     branches:
+      - "DTT-*"
       - "main"
 
 env:
@@ -63,7 +64,10 @@ jobs:
           helm upgrade --install --atomic --timeout 2m \
             dtt-service ./charts/ -f ./charts/values.yaml \
             --namespace dtt-dev --create-namespace \
-            --set deployment.image.tag=dev-${{ github.run_id }}
+            --set deployment.image.tag=dev-${{ github.run_id }} \
+            --set environment.secrets.SECRET_KEY=${{ secrets.SECRET_KEY }} \
+            --set environment.secrets.OAUTH_GITHUB_CLIENT_ID=${{ secrets.OAUTH_GITHUB_CLIENT_ID_DEV }} \
+            --set environment.secrets.OAUTH_GITHUB_CLIENT_SECRET=${{ secrets.OAUTH_GITHUB_CLIENT_SECRET_DEV }}
       - name: Update deployment status
         uses: chrnorm/deployment-status@v2
         if: always()

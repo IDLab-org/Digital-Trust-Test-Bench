@@ -18,6 +18,17 @@ pip install --upgrade pip
 pip install -r requirements.txt
 
 ```
+### Create local .env file and fill in values
+```cp .env.example .env```
+
+Example values:
+```
+ENV=development
+DEBUG=true
+TESTING=true
+SECRET_KEY=my_s3cret_key
+DTT_FRONTEND_URL="http://localhost:5000" # Use a locally running DTT Frontend instance
+```
 
 ### Run the application
 ```uvicorn main:app --reload --host 0.0.0.0```

@@ -15,13 +15,15 @@ class Settings(BaseSettings):
         "name": "IDLab",
         "url": "https://idlab.org",
     }
-    PROJECT_LICENSE_INFO = {
-        "name": "Undefined",
-        "url": "https://example.com/"
-    }
-    DEMO_USER = {
-        "email": "user@example.com",
-        "password": "password123"
-    }
+    # PROJECT_LICENSE_INFO = {
+    #     "name": "",
+    #     "url": ""
+    # }
+
+    SECRET_KEY=os.environ["SECRET_KEY"]
+    VERSION=os.environ["VERSION"]
+    DTT_FRONTEND_URL=os.environ["DTT_FRONTEND_URL"]
+    OAUTH_GITHUB_CLIENT_ID=os.environ["OAUTH_GITHUB_CLIENT_ID"]
+    OAUTH_GITHUB_CLIENT_SECRET=os.environ["OAUTH_GITHUB_CLIENT_SECRET"]
 
 settings = Settings()

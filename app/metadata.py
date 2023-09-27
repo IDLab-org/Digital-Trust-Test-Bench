@@ -1,10 +1,12 @@
 tags_metadata = [
     {
         "name": "Authentication",
-        "description": "Authentication endpoints",
-        "externalDocs": {
-            "description": "Authentication endpoints",
-            "url": "https://github.com/IDLab-org/DTT-Service",
-        }
-    }
+        "description": "Authentication endpoints, provided by fastapi-users",
+        "externalDocs": {}
+    },
+    {
+        "name": "Users",
+        "description": "User management endpoints, provided by fastapi-users",
+        "externalDocs": {}
+    },
 ]

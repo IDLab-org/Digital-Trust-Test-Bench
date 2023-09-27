@@ -9,7 +9,7 @@ metadata:
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
-  - host: "{{ .subdomain }}.{{ .domain }}"
+  - host: "{{ .domain }}"
     http:
       paths:
       - backend:
