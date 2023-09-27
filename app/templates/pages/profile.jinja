@@ -1,0 +1,16 @@
+{% extends 'layouts/base.jinja' %}
+{% block page %}
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+<p style="color: red; text-align:center;">{{ message }}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<div class="container">
+    <div class="row">
+    </div>
+</div>
+{% endblock %}

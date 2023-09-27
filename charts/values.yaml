@@ -30,7 +30,7 @@ environment:
     ENV: production
     DEBUG: False
     TESTING: False
-    DTT_SERVICE_URL: http://dtt-service-svc:8000/
+    DTT_SERVICE_URL: http://dtt-service:8000
     # Overwritten with image tag during pipeline
     VERSION: ChangeMe
   secrets:

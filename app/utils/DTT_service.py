@@ -6,7 +6,7 @@ class DTT_service:
     """
         Encapsulates all calls to the DTT service
     """
-    def request(method, route, json_params, api_token):
+    def request(method, route, json_params='', api_token=''):
         """
         Sends a  request to the DTT service
         Input: 
@@ -26,13 +26,16 @@ class DTT_service:
         try:
             match method:
                 case 'get':
-                    response = requests.get(url=apiurl)
+                    response = requests.get(url=apiurl, headers = api_token)
 
                 case 'post':
-                    response = requests.post(url=apiurl, json=json_params)
+                    response = requests.post(url=apiurl, json=json_params, headers = api_token)
+
+                case 'put':
+                    response = requests.put(url=apiurl, json=json_params, headers = api_token)
 
                 case 'delete':
-                    response = requests.delete(url=apiurl, json=json_params)
+                    response = requests.delete(url=apiurl, json=json_params, headers = api_token)
                 case _:
                     response = {}  ## TBD: figure a better default value 
 

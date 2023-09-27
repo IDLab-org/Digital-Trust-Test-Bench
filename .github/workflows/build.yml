@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "main"
+      - "DTT-*"
   
 env:
   DEV_TAG: idlaborg/dtt-frontend:dev-${{ github.run_id }}
@@ -64,7 +65,8 @@ jobs:
             dtt-frontend ./charts/ -f ./charts/values.yaml \
             --namespace dtt-dev --create-namespace \
             --set deployment.image.tag=dev-${{ github.run_id }} \
-            --set environment.variables.VERSION=dev-${{ github.run_id }}
+            --set environment.variables.VERSION=dev-${{ github.run_id }} \
+            --set environment.secrets.SECRET_KEY=${{ secrets.SECRET_KEY }}
       - name: Update deployment status
         uses: chrnorm/deployment-status@v2
         if: always()

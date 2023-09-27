@@ -51,6 +51,17 @@ Expected parameters: form - The form object to display (from forms.py)
             
         </div>
     </form>
+        </div>
+        <div class="hr-text">or</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col"><a href="{{ url_for('auth.github_login') }}" class="btn btn-secondary w-100" >
+                        <img src="{{ url_for('static', filename='github-mark.svg') }}" width="22" alt="Login with GitHub">
+                        &nbsp; Login with GitHub
+                    </a></div>
+            </div>
+        </div>
+    </div>
     <!-- Futures
     </div>
         <div class="hr-text">or</div>

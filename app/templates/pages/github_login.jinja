@@ -1,0 +1,75 @@
+{#  ------------
+Template for github_login Login form on a page 
+For now - this form has no fields - just an action button
+--------------- #}
+
+{% extends 'layouts/base_auth.jinja' %}
+
+{% block page %}
+<div class="container container-tight py-4">
+    <div class="text-center mb-4">
+        <a href="#" class="navbar-brand navbar-brand-autodark"><img
+                src="{{ url_for('static', filename='logo-bil-H.png') }}" width="420" alt=""></a>
+    </div>
+    <div class="card card-md">
+        <div class="card-body">
+            <h2 class="h2 text-center mb-4">Login</h2>
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            <br>
+            <p style="color: red; text-align:center;">{{ message }}</p>
+            {% endfor %}
+            <br><br>
+            {% endif %}
+            {% endwith %}
+
+            <form action="" method="post" autocomplete="off" novalidate="">
+                {{ form.hidden_tag() }}
+
+                <div class="form-footer">
+                    <div class="col"><a href="{{ url_for('auth.github_login') }}" class="btn btn-secondary w-100">
+                            <img src="{{ url_for('static', filename='github-mark.svg') }}" width="22"
+                                alt="Login with GitHub">
+                            &nbsp; Login with GitHub
+                        </a></div>
+
+                </div>
+            </form>
+
+        {# </div>
+            <div class="hr-text">or</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col"><a href="#" class="btn w-100" data-bs-toggle="modal" data-bs-target="#modal-qr">
+                            <i class="icon bi bi-qr-code-scan"></i>
+                            Login with VC
+                        </a></div>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-muted mt-3">
+            Don't have account yet? <a href="#" tabindex="-1">Sign up</a>
+        </div>
+    </div> #}
+
+            {# <div class="modal modal-blur fade" id="modal-qr" tabindex="-1" style="display: none;" aria-hidden="true"
+                style="display: block;">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Present</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img class="rounded mb-3"
+                                src="{{ qrcode(session['invitation'], error_correction='H', icon_img='https://www.idlab.org/wp-content/themes/idlab/favicon.png') }}">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Login</button>
+                        </div>
+                    </div>
+                </div>
+            </div> #}
+            {% endblock %}
