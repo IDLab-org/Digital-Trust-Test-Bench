@@ -1,0 +1,26 @@
+<div class="modal modal-blur fade" id="test-suite-running-modal" tabindex="-1" style="display: none;"
+    aria-modal="true" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ title }}</h5>
+                {# <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> #}
+            </div>
+            <div class="modal-body">
+                <div class="text-center">
+                    <div class="mb-3">
+                        <a href="." class="navbar-brand navbar-brand-autodark"><img src="{{ url_for('static', filename='images/idlab_loading.gif') }}" height="300" alt=""></a>
+                    </div>
+                    <div class="text-secondary mb-3">Running test-suite, please be patient...</div>
+                    <div class="progress progress-sm">
+                    {# <div class="progress-bar progress-bar-indeterminate"></div> #}
+                    </div>
+                </div>
+            </div>
+            {# <div class="modal-footer">
+                <button type="button" class="btn me-auto" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+            </div> #}
+        </div>
+    </div>
+</div>

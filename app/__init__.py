@@ -1,12 +1,10 @@
 from flask import Flask, session
 from config import Config
-from flask_qrcode import QRcode
 import logging
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
-    QRcode(app)
 
     if __name__ != "__main__":
         gunicorn_logger = logging.getLogger("gunicorn.error")
@@ -24,5 +22,9 @@ def create_app(config_class=Config):
     from app.routes.main import bp as main_bp
 
     app.register_blueprint(main_bp)
+
+    from app.routes.modules import bp as modules_bp
+
+    app.register_blueprint(modules_bp, url_prefix="/modules")
 
     return app

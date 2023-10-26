@@ -2,16 +2,17 @@
 {% block page %}
 
 <div class="page-wrapper">
-    <div class="page-header d-print-none mb-5">
+    <div class="page-header d-print-none">
         <div class="container-xl">
             <div class="row g-2 align-items-center">
                 <div class="col">
                     <div class="page-pretitle mb-1">
                         <ol class="breadcrumb" aria-label="breadcrumbs">
-                            <li class="breadcrumb-item active" aria-current="page"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="#">Modules</a></li>
                         </ol>
                     </div>
-                    <h2 class="page-title">Welcome!</h2>
+                    <h2 class="page-title">Modules</h2>
                 </div>
             </div>
         </div>
@@ -20,36 +21,48 @@
         <div class="container-xl">
             <div class="row row-cards">
                 <div class="col-md-8">
-                    <a href="{{ url_for('modules.vc_validator_v1') }}" class="card mb-3">
+                    <div class="card mb-3">
                         <div class="card-header">
                             <div>
-                                <h3 class="card-title">VC Test Suites</h3>
+                                <h3 class="card-title">AATH</h3>
                                 <p class="card-subtitle">
-                                    Run Verifiable Credentials test-suites
+                                    Aries Agent Test Harness
                                 </p>
                             </div>
+                            <div class="card-actions">
+                                <a href="#" class="btn btn-primary">Configure</a>
+                            </div>
                         </div>
-                    </a>
-                    <a href="{{ url_for('modules.index') }}" class="card mb-3">
+                        <div class="card-body p-0"></div>
+                    </div>
+                    <div class="card mb-3">
                         <div class="card-header">
                             <div>
-                                <h3 class="card-title">Interop Test Harness</h3>
+                                <h3 class="card-title">W3C</h3>
                                 <p class="card-subtitle">
-                                    Test your issuer, verifier or mobile wallet
+                                    Credentials Community Group Test Suites
                                 </p>
                             </div>
+                            <div class="card-actions">
+                                <a href="{{ url_for('modules.w3c') }}" class="btn btn-primary">Configure</a>
+                            </div>
                         </div>
-                    </a>
-                    <a href="#" class="card mb-3">
+                        <div class="card-body p-0"></div>
+                    </div>
+                    <div class="card mb-3">
                         <div class="card-header">
                             <div>
-                                <h3 class="card-title">Reports</h3>
+                                <h3 class="card-title">OpenID</h3>
                                 <p class="card-subtitle">
-                                    Browse reports availiable in this workspace.
+                                    Experiment with OIDC exchanges
                                 </p>
                             </div>
+                            <div class="card-actions">
+                                <a href="#" class="btn btn-primary">Configure</a>
+                            </div>
                         </div>
-                    </a>
+                        <div class="card-body p-0"></div>
+                    </div>
                 </div>
                 {# <div class="col-md-4">
                     <div class="card">

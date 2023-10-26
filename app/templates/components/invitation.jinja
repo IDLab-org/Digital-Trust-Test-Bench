@@ -1,0 +1,9 @@
+{% include 'components/invitation_modal.jinja' %}
+<a href="#" class="nav-link px-0" data-bs-toggle="modal" data-bs-target="#modal-invitation">
+    <i class="icon bi bi-qr-code"></i>
+    {% if session["agent_connected"] %}
+    <span class="badge bg-green"></span>
+    {% else %}
+    <span class="badge bg-red"></span>
+    {% endif %}
+</a>

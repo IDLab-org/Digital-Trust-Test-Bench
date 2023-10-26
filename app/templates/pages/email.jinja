@@ -17,14 +17,14 @@ For now - this form has no fields - just an action button
         <i class="icon bi bi-github"></i> with GitHub
     </a> #}
     <div class="text-center mb-4">
-        {{ qr_presentation }}
+        {{ img }}
     </div>
-    <a href="{{url_for('auth.vc_login')}}" class="btn w-100 mb-3">
+    {# <a href="{{url_for('auth.vc_login')}}" class="btn w-100 mb-3">
                 <i class="icon bi bi-qr-code"></i> VC Login
             </a>
     <a href="{{ url_for('auth.github_login') }}" class="btn btn-secondary w-100 mb-3">
         <i class="icon bi bi-github"></i> GitHub Login
-    </a>
+    </a> #}
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     {% for message in messages %}
@@ -40,25 +40,26 @@ For now - this form has no fields - just an action button
     {% endif %}
     {% endwith %}
 </div>
-<div class="text-center text-muted mt-3">
-    Don't have account yet? <a href="#" tabindex="-1" data-bs-toggle="modal" data-bs-target="#modal-signup">Sign up</a>
-</div>
+{# <div class="text-center text-muted mt-3">
+    Don't have account yet? <a href="#" tabindex="-1">Sign up</a>
+</div> #}
 
-<div class="modal modal-blur fade" id="modal-signup" tabindex="-1" style="display: none;" aria-hidden="true"
+<div class="modal modal-blur fade" id="modal-qr" tabindex="-1" style="display: none;" aria-hidden="true"
     style="display: block;">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        {% include('emails/credential_offer.jinja') %}
-        {# <div class="modal-content">
+        <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Present</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
+                <img class="rounded mb-3"
+                    src="{{ qrcode(session['presentation_request'], error_correction='H', icon_img='https://www.idlab.org/wp-content/themes/idlab/favicon.png') }}">
             </div>
             <div class="modal-footer">
                 <a type="button" href="{{url_for('auth.vc_login')}}" class="btn btn-primary">Login</a>
             </div>
-        </div> #}
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'layouts/base.jinja' %}
+{% block page %}
+<div class="page-wrapper">
+    <div class="page-header d-print-none">
+        <div class="container-xl">
+            <div class="row g-2 align-items-center">
+                <div class="col">
+                    <div class="page-pretitle mb-1">
+                        <ol class="breadcrumb" aria-label="breadcrumbs">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item"><a href="#">Modules</a></li>
+                            <li class="breadcrumb-item"><a href="#">W3C</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="#">VC-Profiler</a></li>
+                        </ol>
+                    </div>
+                    <h2 class="page-title">VC Test Suite</h2>
+                </div>
+                <!-- Page title actions -->
+                <div class="col-auto ms-auto d-print-none">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-body">
+        <div class="container-xl d-flex flex-column justify-content-center">
+            <form method="post">
+                <div class="row row-cards">
+                    {{ form.hidden_tag() }}
+                    <div class="col-md-6 col-lg-6">
+                        <div class="card-body">
+                            <h3 class="card-title">{{ form.vc.label(class="form-label") }}</h3>
+                            <div class="mb-3">
+                                {{ form.vc(class="form-control", style="height: 280px;") }}
+                            </div>
+                                {{ form.submit(class="btn btn-primary") }}
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6">
+                        <div class="card-body">
+                            <h3 class="card-title">VC Profile</h3>
+                            <dl class="row">
+                            {% for feature in vc_profile %}
+                                <dt class="col-5">{{feature}}</dt>
+                                <dd class="col-7">
+                                {% if vc_profile[feature] %}
+                                    {% if feature == "Context" %}
+                                    {% for context in vc_profile[feature]%}
+                                    {{ context }}
+                                    {% endfor %}
+                                    {% endif %}
+                                {# <span class="badge badge-outline text-azure">{{ vc_profile[feature] }}</span> #}
+                                {% else %}
+                                <span class="badge badge-outline text-danger">{{ vc_profile[feature] }}</span>
+                                {% endif %}
+                                </dd>
+                            {% endfor %}
+                                {# <dt class="col-5">Issuer</dt>
+                                <dd class="col-7"></dd>
+                                <dt class="col-5">Features</dt>
+                                <dd class="col-7">
+                                {% for feature in credential_profile['features'] %}
+                                <span class="badge badge-outline text-azure">{{ feature }}</span>
+                                {% endfor %}
+                                </dd>
+                                <dt class="col-5">Expires</dt>
+                                <dd class="col-7"><span class="badge badge-outline text-azure">{{ credential_profile['expires'] }}</span></dd>
+                                <dt class="col-5">Proof Type</dt>
+                                <dd class="col-7"><span class="badge badge-outline text-azure">{{ credential_profile['proof'] }}</span></dd> #}
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

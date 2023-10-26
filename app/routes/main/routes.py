@@ -11,8 +11,4 @@ def before_request_callback():
 
 @bp.route("/", methods=["GET", "POST"])
 def index():
-    return redirect(url_for("auth.login"))
-
-@bp.route("/home", methods=["GET"])
-def home():
-    return render_template("pages/index.jinja")
+    return render_template("pages/index.jinja", title="Dashboard | DTT")

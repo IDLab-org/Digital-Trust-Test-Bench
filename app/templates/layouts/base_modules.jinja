@@ -1,0 +1,21 @@
+<html lang="en">
+
+{% include 'layouts/head.jinja' %}
+
+<body>
+    <div class="page">
+        <!-- Navbar -->
+        {% include 'layouts/header.jinja' %}
+        <div class="page-wrapper">
+            <!-- Page body -->
+            {% block page_content %}{% endblock %}
+            {% include 'layouts/footer.jinja' %}
+        </div>
+    </div>
+    <!-- Libs JS -->
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <!-- Tabler Core -->
+    <script src="{{ url_for('static', filename='js/tabler.min.js') }}"></script>
+</body>
+
+</html>

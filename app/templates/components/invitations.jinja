@@ -1,0 +1,40 @@
+{% with messages = get_flashed_messages() %}
+<a href="#" class="nav-link px-0" data-bs-toggle="dropdown" tabindex="-1" aria-label="Show notifications">
+    <i class="icon bi bi-envelope"></i>
+    {% if messages %}
+    <span class="badge bg-red"></span>
+    {% endif %}
+</a>
+<div class="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Invitations</h3>
+        </div>
+        <div class="list-group list-group-flush list-group-hoverable">
+            {% if messages %}
+            {% for idx, message in enumerate(messages) %}
+            <div class="list-group-item">
+                <div class="row align-items-center">
+                    <div class="col-auto"><span class="status-dot status-dot-animated bg-red d-block"></span></div>
+                    <div class="col text-truncate">
+                        <a href="#" class="text-body d-block">Message {{ idx }}</a>
+                        <div class="d-block text-secondary text-truncate mt-n1">
+                            {{ message }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="list-group-item">
+                <div class="row align-items-center">
+                    <div class="col text-truncate">
+                        <a href="#" class="text-body d-block">No invitations</a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endwith %}
