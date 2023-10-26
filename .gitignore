@@ -2,3 +2,5 @@ __pycache__/
 .env
 venv/
 env
+tests/geckodriver.log
+tests/allure_results/
