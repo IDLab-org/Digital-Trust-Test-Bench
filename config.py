@@ -20,8 +20,8 @@ class Settings(BaseSettings):
     #     "url": ""
     # }
 
-    SECRET_KEY=os.environ["SECRET_KEY"]
     VERSION=os.environ["VERSION"]
+    SECRET_KEY=os.environ["SECRET_KEY"]
     DTT_FRONTEND_URL=os.environ["DTT_FRONTEND_URL"]
     OAUTH_GITHUB_CLIENT_ID=os.environ["OAUTH_GITHUB_CLIENT_ID"]
     OAUTH_GITHUB_CLIENT_SECRET=os.environ["OAUTH_GITHUB_CLIENT_SECRET"]

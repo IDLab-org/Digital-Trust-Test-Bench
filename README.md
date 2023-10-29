@@ -31,7 +31,7 @@ DTT_FRONTEND_URL="http://localhost:5000" # Use a locally running DTT Frontend in
 ```
 
 ### Run the application
-```uvicorn main:app --reload --host 0.0.0.0```
+```uvicorn main:app --reload --host 0.0.0.0 --port 8000```
 
 - The application will be running at [http://localhost:8000](http://localhost:8000)
 - Openapi doc availiable at [http://localhost:8000/docs](http://localhost:8000/docs)

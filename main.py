@@ -1,6 +1,15 @@
 from fastapi import FastAPI, APIRouter
-from app.routers import authentication, users
+from app.routers import authentication, users, workspaces
 from config import settings
+
+""" Setup Shared DTT-Modules K8S Objects """
+""" W3C """
+# namespace = "module-w3c"
+# if k8s.namespace_exists(namespace):
+#     try:
+#         module_w3c.deploy_init(namespace)
+#     except:
+#         pass
 
 app = FastAPI(
     title=settings.PROJECT_TITLE,
@@ -17,6 +26,7 @@ api_router.include_router(authentication.router, prefix="/auth")
 
 # routes for user management (mostly inherited from "FastAPI Users")
 api_router.include_router(users.router, prefix='/users')
+api_router.include_router(workspaces.router, prefix='/workspaces')
 
 app.include_router(api_router)
 
