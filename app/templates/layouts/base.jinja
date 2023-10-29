@@ -2,31 +2,7 @@
 {% include 'layouts/head.jinja' %}
 <body class="d-flex flex-column theme-light">
     <div class="page page-center">
-<<<<<<< HEAD
-        {# <header class="navbar navbar-expand-md navbar-transparent d-print-none">
-            <div class="container-xl">
-                <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
-                    <div class="nav-item">
-                        <div class="nav-link d-flex lh-1 text-reset p-0">
-                            <span class="avatar"
-                                style="background-image: url(https://api.dicebear.com/6.x/shapes/svg?seed={{ session['token'] }})"></span>
-                            <div class="d-none d-xl-block ps-2">
-                                <div>{{ session['token'] }}</div>
-                                <div class="mt-1 small text-muted">{{ title }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </h1>
-            </div>
-        </header> #}
-        <div class="text-center mb-4 mt-4">
-            <a href="." class="navbar-brand navbar-brand-autodark"><img
-                    src="{{ url_for('static', filename='logo-bil-H.png') }}" height="75" alt=""></a>
-        </div>
-        {% include "layouts/header2.jinja" %}
-=======
-        {% include "layouts/nav.jinja" %}
->>>>>>> main
+        {% include "layouts/header.jinja" %}
         {% block page %}{% endblock %}
         {% include 'layouts/footer.jinja' %}
     </div>

@@ -89,26 +89,25 @@ def logout():
 def github_login():
    # Call DTT Service's Authorize API
    # TBD: Create URI with config parameters - Create new function in utils/DTT_service to form the URL
-    response = DTT_service.request(method='get', route='/auth/github/authorize')
-    if response.status_code != 200:
+    # response = DTT_service.request(method='get', route='/auth/github/authorize')
+    r = requests.get(f'{current_app.config["DTT_SERVICE_URL"]}/auth/github/authorize')
+    if r.status_code != 200:
         flash({
             "title": "Service Unavailiable",
-            "error": response.status_code,
+            "error": r.status_code,
             "message": "DTT service is currently unavailiable"
         })    
-        return redirect(url_for("auth.login"))  # TBD - Redirect to a better error page
+        return redirect(url_for("auth.logout"))  # TBD - Redirect to a better error page
     
-    elif 'authorization_url' not in response.json():
+    elif 'authorization_url' not in r.json():
         flash({
             "title": "Service Unavailiable",
-            "error": response.status_code,
+            "error": r.status_code,
             "message": "No authorization URL returned"
         })    
-        return redirect(url_for("auth.login"))  # TBD - Redirect to a better error page
+        return redirect(url_for("auth.logout"))  # TBD - Redirect to a better error page
 
-    authorize_url=response.json()['authorization_url']
-
-    return redirect(authorize_url)
+    return redirect(r.json()['authorization_url'])
 
 # '/github-callback' is called after github's authorization page was displayed to the user and they accepted.
 # This route is invoked as a redirect page by github's authorization function
@@ -138,7 +137,7 @@ def github_callback():
             "error": response.status_code,
             "message": "GitHub callback error"
         })
-        return redirect(url_for("auth.login"))
+        return redirect(url_for("auth.logout"))
 
     # extract the token
     elif 'access_token' not in response.json():
@@ -147,7 +146,7 @@ def github_callback():
             "error": response.status_code,
             "message": "No token returned"
         })
-        return redirect(url_for("auth.login"))
+        return redirect(url_for("auth.logout"))
 
     token = response.json()['access_token']
     # Create the Authorization header and store it into this user's session
@@ -161,7 +160,6 @@ def github_callback():
     #       So this /users/me call should return all necessary user data
     response = DTT_service.request(method='get', route=f'/users/me', api_token=session["authorization_header"])  
     user_info = response.json()
-    
     if 'id' not in user_info:
         flash({
             "title": "Service Unavailiable",
@@ -177,57 +175,54 @@ def github_callback():
     # For more details: See https://idlab-org.atlassian.net/wiki/spaces/DTT/pages/1309900880/Login+with+github+-+Implementation+Notes
     response = DTT_service.request(method='get', route=f'/users/github-user', api_token=session["authorization_header"])  
     github_profile=response.json()
-    r = requests.post('https://vc-api.dtt.idlab.app/workflows/credential-offer')
+    # r = requests.post('https://vc-api.dtt.idlab.app/workflows/credential-offer')
 
-    # Fetch personal workspace info, create if it doesn't exist
-    workspace_type = 'private'
-    workspace_id = hashlib.md5(github_profile['login'].encode('utf-8')).hexdigest()
-    r = requests.post(f'{current_app.config["DTT_MODULES_URL"]}/workspaces?workspace_type={workspace_type}&workspace_id={workspace_id}')
-    session['workspaces'] = {
-        "private": r.json(),
-        "shared": [],
-        "public": []
-    }
-    # if session['user_info']['organization']:
-    #     body = {
-    #         "name": session['user_info']['organization'],
-    #         "scope": "organization"
-    #     }
-    #     response = DTT_service.request(method='post', route=f'/workspaces', json_params=body, api_token=session["authorization_header"])
+    # # Fetch personal workspace info, create if it doesn't exist
+    # workspace_type = 'private'
+    # workspace_id = hashlib.md5(github_profile['login'].encode('utf-8')).hexdigest()
+    # r = requests.post(f'{current_app.config["DTT_MODULES_URL"]}/workspaces?workspace_type={workspace_type}&workspace_id={workspace_id}')
+    # session['workspaces'] = {
+    #     "private": r.json(),
+    #     "shared": [],
+    #     "public": []
+    # }
+    # # if session['user_info']['organization']:
+    # #     body = {
+    # #         "name": session['user_info']['organization'],
+    # #         "scope": "organization"
+    # #     }
+    # #     response = DTT_service.request(method='post', route=f'/workspaces', json_params=body, api_token=session["authorization_header"])
 
-    # some user info gets stored into the session object
+    # # some user info gets stored into the session object
     session['user_info'] = {
-        "id": user_info['id'],
-        "name": github_profile['name'],
-        "email": user_info['email'],
+        "email": github_profile['emails'][0]['email'],
         "username": github_profile['login'],
-        "organization": github_profile['company'],
-        "workspace": workspace_id
+        "organization": github_profile['company']
     }
     session["online"] = True
 
-    # Create a credential offer for the user
-    schema = {
-        "name": "DTTProfile",
-        "version": "0.1",
-        "attributes": [
-            "id",
-            "name",
-            "email",
-            "username",
-            "organization",
-            "workspace"
-            ]
-    }
-    credential_offer = {
-        "credentialSubject": session['user_info'],
-        "credentialSchema": {
-            "id": "RzWHypcqRZSB1prwXnApsS:2:DTTProfile:0.1",
-            "definition": "RzWHypcqRZSB1prwXnApsS:3:CL:97127:IDLab DTT Profile"
-        }
-    }
-    r = requests.post('https://vc-api.dtt.idlab.app/workflows/credential-offer?anoncreds=True', json={"credential":credential_offer})
-    session["credential_offer"] = r.json()["exchange-url"]
+    # # Create a credential offer for the user
+    # schema = {
+    #     "name": "DTTProfile",
+    #     "version": "0.1",
+    #     "attributes": [
+    #         "id",
+    #         "name",
+    #         "email",
+    #         "username",
+    #         "organization",
+    #         "workspace"
+    #         ]
+    # }
+    # credential_offer = {
+    #     "credentialSubject": session['user_info'],
+    #     "credentialSchema": {
+    #         "id": "RzWHypcqRZSB1prwXnApsS:2:DTTProfile:0.1",
+    #         "definition": "RzWHypcqRZSB1prwXnApsS:3:CL:97127:IDLab DTT Profile"
+    #     }
+    # }
+    # r = requests.post('https://vc-api.dtt.idlab.app/workflows/credential-offer?anoncreds=True', json={"credential":credential_offer})
+    # session["credential_offer"] = r.json()["exchange-url"]
     return redirect(url_for("main.index"))
 
 # TEST function - auth/profile 
