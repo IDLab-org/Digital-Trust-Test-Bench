@@ -1,4 +1,6 @@
 from fastapi import FastAPI, APIRouter
+from fastapi.responses import HTMLResponse
+from starlette.responses import RedirectResponse
 from app.routers import authentication, users, workspaces
 from config import settings
 
@@ -20,6 +22,10 @@ app = FastAPI(
 )
 
 api_router = APIRouter()
+
+@api_router.get("/", response_class=HTMLResponse, include_in_schema=False)
+async def index():
+    return RedirectResponse(url="/docs")
 
 # routes for authentication (mostly inherited from "FastAPI Users")
 api_router.include_router(authentication.router, prefix="/auth")
