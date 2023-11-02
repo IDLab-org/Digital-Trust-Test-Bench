@@ -31,7 +31,9 @@ environment:
     DEBUG: False
     TESTING: False
     DTT_SERVICE_URL: http://dtt-service:8000
-    DTT_MODULES_URL: http://dtt-modules:8000
+    VC_API_ENDPOINT: https://vc-api.dtt-cloud.idlab.app
+    AGENT_ENDPOINT: https://agent.dtt-cloud.idlab.app
+    AGENT_ADMIN_ENDPOINT: https://agent-admin.dtt-cloud.idlab.app
     # Overwritten with image tag during pipeline
     VERSION: ChangeMe
   secrets:
