@@ -17,6 +17,8 @@ spec:
       labels:
         app: {{ $.Values.app_name }}
     spec:
+      serviceAccountName: {{ $.Values.namespace }}
+      automountServiceAccountToken: true
       imagePullSecrets:
       - name: regcred
       containers:
