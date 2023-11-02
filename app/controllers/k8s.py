@@ -8,7 +8,7 @@ import time
 
 
 def get_config():
-    if settings.LOCAL:
+    if settings.VERSION == "local":
         config.load_kube_config()
     else:
         config.load_incluster_config()

@@ -20,7 +20,6 @@ class Settings(BaseSettings):
     #     "url": ""
     # }
 
-    LOCAL:bool=os.environ["LOCAL"]
     VERSION=os.environ["VERSION"]
     SECRET_KEY=os.environ["SECRET_KEY"]
     DTT_FRONTEND_URL=os.environ["DTT_FRONTEND_URL"]
