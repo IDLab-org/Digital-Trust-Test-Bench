@@ -19,7 +19,7 @@ def index():
 @bp.route("/vc-test-suite", methods=["GET", "POST"])
 def vc_test_suite():
     form = VcTestSuiteFormV1()
-    report_url = "http://localhost:5000/test-suites/vc-test-suite/report"
+    report_url = url_for("test_suites.vc_test_suite_report")
     vc_profile = None
     with open("app/static/data/vc/example.jsonld", "r") as f:
         vc_example = f.read()
