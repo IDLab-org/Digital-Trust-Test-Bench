@@ -17,6 +17,7 @@ ingress:
 
 environment:
   variables:
+    LOCAL: False
     VERSION: development
     DTT_FRONTEND_URL: http://dtt-dev.internal.idlab.org:5000
   secrets:

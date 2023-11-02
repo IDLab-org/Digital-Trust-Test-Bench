@@ -1,0 +1,25 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backchannel-{{ backchannel_id }}-svc
+spec:
+  selector:
+    app: backchannel-{{ backchannel_id }}
+  ports:
+    - protocol: TCP
+      name: backchannel-api
+      port: 8020
+      targetPort: 8020
+    - protocol: TCP
+      name: agent-inbound
+      port: 8021
+      targetPort: 8021
+    - protocol: TCP
+      name: agent-admin
+      port: 8022
+      targetPort: 8022
+    - protocol: TCP
+      name: backchannel-webhooks
+      port: 8023
+      targetPort: 8023

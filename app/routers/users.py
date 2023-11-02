@@ -41,7 +41,6 @@ async def get_github_user_info(user: User = Depends(current_active_user)):
                 github_basic_userinfo['emails'] = response.json()
         except:
             return {"error":"Unable to call github/email"}   ## TBD: Return proper error code
-
     return github_basic_userinfo
 
 router.include_router(

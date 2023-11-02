@@ -1,7 +1,7 @@
 from fastapi import FastAPI, APIRouter
 from fastapi.responses import HTMLResponse
 from starlette.responses import RedirectResponse
-from app.routers import authentication, users, workspaces
+from app.routers import authentication, users, workspaces, test_suites, reports
 from config import settings
 
 """ Setup Shared DTT-Modules K8S Objects """
@@ -32,7 +32,9 @@ api_router.include_router(authentication.router, prefix="/auth")
 
 # routes for user management (mostly inherited from "FastAPI Users")
 api_router.include_router(users.router, prefix='/users')
+api_router.include_router(test_suites.router, prefix='/test-suites')
 api_router.include_router(workspaces.router, prefix='/workspaces')
+api_router.include_router(reports.router, prefix='/reports')
 
 app.include_router(api_router)
 

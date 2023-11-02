@@ -26,10 +26,12 @@ vc_input = {
   }
 
 class VCTestSuiteV1Input(BaseModel):
-    vc_input: dict = Field(alias="input", example=vc_input) 
-    supported_features: list = Field(example=["basic", "schema", "refresh", "evidence", "status", "tou", "ldp", "jwt", "zkp"])
+    workspace_id: str = ''
+    verifiable_credential: dict = vc_input
+    # supported_features: list = Field(example=["basic", "schema", "refresh", "evidence", "status", "tou", "ldp", "jwt", "zkp"])
 
 
 
 class CreateWorkspaceInput(BaseModel):
-    name: str = Field(example="my_workspace") 
+    workspace_label: str = Field(example="demo.user@idlab.org") 
+    workspace_type: str = Field(example="private") 

@@ -1,0 +1,36 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: allure-send-results
+data:
+  send_results.sh: |
+    #!/bin/bash
+    DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+    FILES_TO_SEND=$(ls -dp $DIR/allure-results/* | grep -v /$)
+    if [ -z "$FILES_TO_SEND" ]; then
+      exit 1
+    fi
+
+    FILES=''
+    for FILE in $FILES_TO_SEND; do
+      FILES+="-F files[]=@$FILE "
+    done
+
+    set -o xtrace
+
+    echo "------------------CREATE-PROJECT------------------"
+    curl -X POST "$ALLURE_SERVER/allure-docker-service/projects" -H  "Content-Type: application/json" -d "{\"id\": \"$PROJECT_ID\"}" -ik
+
+    echo "------------------CLEANING-RESULTS------------------"
+    curl -X GET "$ALLURE_SERVER/allure-docker-service/clean-results?project_id=$PROJECT_ID"
+
+    echo "------------------SEND-RESULTS------------------"
+    curl -X POST "$ALLURE_SERVER/allure-docker-service/send-results?project_id=$PROJECT_ID" -H 'Content-Type: multipart/form-data' $FILES -ik
+
+    echo "------------------GENERATE-REPORT------------------"
+    curl -X GET "$ALLURE_SERVER/allure-docker-service/generate-report?project_id=$PROJECT_ID" $FILES
+
+    #RESPONSE=$(curl -X GET "$ALLURE_SERVER/allure-docker-service/generate-report?project_id=$PROJECT_ID" $FILES)
+    #ALLURE_REPORT=$(grep -o '"report_url":"[^"]*' <<< "$RESPONSE" | grep -o '[^"]*$')
+    #ALLURE_REPORT=$(echo $RESPONSE | jq '.data.report_url')
