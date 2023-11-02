@@ -1,0 +1,136 @@
+{% extends 'layouts/base.jinja' %}
+{% block page %}
+<div class="page-header d-print-none">
+    <div class="container-xl">
+        <div id="test-runtime-modal"></div>
+        <div class="row g-2 align-items-center">
+            <div class="col">
+                <div class="page-pretitle mb-1">
+                    <ol class="breadcrumb" aria-label="breadcrumbs">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">VC-Test-Suite</li>
+                    </ol>
+                </div>
+                <h2 class="page-title">VC Test Suite</h2>
+            </div>
+            <!-- Page title actions -->
+            <div class="col-auto ms-auto d-print-none">
+                <div class="btn-list">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="page-body">
+    <div class="container-xl d-flex flex-column justify-content-center">
+        <div class="mb-3">
+            {% include('components/copy_to_clipboard.jinja') %}
+            <a href="#" class="btn btn-outline-dark" onclick="navigator.clipboard.writeText(data_to_copy)">
+                Copy example VC
+            </a>
+            {# <button class="btn btn-icon btn-outline-dark"><i class="icon bi bi-question"></i></button> #}
+            <a target="_blank" href="{{ report_url }}" class="btn btn-primary d-none d-sm-inline-block">
+                View latest report
+            </a>
+        </div>
+        {% include('components/test_runtime_modal.jinja') %}
+        <form method="post" onsubmit="testRuntimeModal('Running test-suite')">
+            <div class="row row-cards">
+                {{ form.hidden_tag() }}
+                <div class="col-md-6 col-lg-6">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            {{ form.vc_file(class="form-control") }}
+                            {# <div class="form-label">Upload JSON-LD File</div> #}
+                            {# <input name="file_vc" type="file" class="form-control"> #}
+                        </div>
+                        <div class="hr-text hr-text-center hr-text-spaceless mt-3 mb-3">OR</div>
+                        <div class="mb-3">
+                            {# <div class="form-label">Paste JSON-LD Content</div> #}
+                            {# {{ form.vc_document.label(class="form-label") }} #}
+                            {{ form.vc_text(class="form-control", placeholder="Paste your VC here", style="height: 350px;") }}
+                            {# <textarea class="form-control" name="text_vc" placeholder="Paste your VC here"
+                                    data-bs-toggle="autosize"
+                                    style="overflow: hidden; overflow-wrap: break-word; resize: none; text-align: start; height: 280px;"></textarea> #}
+                        </div>
+                    </div>
+                    {{ form.submit(class="btn btn-primary w-100") }}
+                </div>
+                <div class="col-md-1 col-lg-1"></div>
+                <div class="col-md-5 col-lg-5">
+                    {% if vc_profile %}
+                    <div class="card-body">
+                        <h3 class="card-title mb-3">VC Profile</h3>
+                        <dl class="row">
+                            {% for feature in vc_profile %}
+                            <dt class="col-5">{{ feature }}</dt>
+                            <dd class="col-7">
+                                {% if vc_profile[feature] %}
+                                {% if feature == "Context" %}
+                                {% for context in vc_profile[feature]%}
+                                <a href="{{ context }}">{{ context }}</a>
+                                {% endfor %}
+                                {% endif %}
+                                {% if feature == "Issuer" %}
+                                <a href="{{ vc_profile[feature] }}">{{ vc_profile[feature] }}</a>
+                                {% endif %}
+                                {% if feature == "Type" %}
+                                <div class="badges-list">
+                                    {% for type in vc_profile[feature]%}
+                                    <span class="badge badge-outline text-dark">{{ type }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                {% if feature == "Proof" %}
+                                <div class="badges-list">
+                                    {% for proof in vc_profile[feature]%}
+                                    <span class="badge badge-outline text-dark">{{ proof }}</span>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                                {# <span class="badge badge-outline text-azure">{{ vc_profile[feature] }}</span> #}
+                                {% else %}
+                                <span class="badge badge-outline text-danger">{{ vc_profile[feature] }}</span>
+                                {% endif %}
+                            </dd>
+                            {% endfor %}
+                            {# <dt class="col-5">Issuer</dt>
+                                <dd class="col-7"></dd>
+                                <dt class="col-5">Features</dt>
+                                <dd class="col-7">
+                                {% for feature in credential_profile['features'] %}
+                                <span class="badge badge-outline text-azure">{{ feature }}</span>
+                                {% endfor %}
+                                </dd>
+                                <dt class="col-5">Expires</dt>
+                                <dd class="col-7"><span class="badge badge-outline text-azure">{{ credential_profile['expires'] }}</span></dd>
+                                <dt class="col-5">Proof Type</dt>
+                                <dd class="col-7"><span class="badge badge-outline text-azure">{{ credential_profile['proof'] }}</span></dd> #}
+                        </dl>
+                    </div>
+                    {% else %}
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal modal-blur fade" id="modal-report" tabindex="-1" style="display: none;" aria-modal="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Latest Report</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body"><iframe allowtransparency="true" height="100%" width="100%" scr="{{ report_url }}"
+                    title="Latest vc-test-suite report"></iframe>
+            </div>
+            <div class="modal-footer">
+                {# <a href="#" class="btn btn-link link-secondary" data-bs-dismiss="modal">
+                    Cancel
+                </a> #}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

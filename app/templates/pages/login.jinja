@@ -20,10 +20,18 @@ For now - this form has no fields - just an action button
         {{ qr_presentation }}
     </div>
     <a href="{{url_for('auth.vc_login')}}" class="btn w-100 mb-3">
-                <i class="icon bi bi-qr-code"></i> VC Login
-            </a>
+        <i class="icon bi bi-qr-code"></i> DIDComm
+    </a>
+    {% include('components/chapi_verifier.jinja') %}
+    <a href="#" class="btn btn-secondary w-100 mb-3" id="requestPresentationButton">
+        <i class="icon bi bi-person-vcard"></i> Chapi
+    </a>
+    {# {% include('components/chapi_issuer.jinja')%}
+    <a href="#" class="btn btn-secondary w-100 mb-3" id="receiveCredentialButton">
+        <i class="icon bi bi-person-vcard"></i> Chapi recieve
+    </a> #}
     <a href="{{ url_for('auth.github_login') }}" class="btn btn-secondary w-100 mb-3">
-        <i class="icon bi bi-github"></i> GitHub Login
+        <i class="icon bi bi-github"></i> GitHub
     </a>
     {% with messages = get_flashed_messages() %}
     {% if messages %}

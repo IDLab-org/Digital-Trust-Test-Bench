@@ -1,3 +1,4 @@
+
 import qrcode
 import qrcode.image.svg
 from qrcode.image.styledpil import StyledPilImage

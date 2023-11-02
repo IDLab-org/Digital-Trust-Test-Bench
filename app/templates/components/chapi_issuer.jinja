@@ -1,0 +1,72 @@
+<script src="https://unpkg.com/credential-handler-polyfill@3/dist/credential-handler-polyfill.min.js"></script>
+{# <script>
+    /*!
+  * Copyright (c) 2022 Digital Bazaar, Inc. All rights reserved.
+  */
+  'use strict'
+
+  /**
+  * Simple config file (to help test against local instances of authn.io, local
+  * wallets, etc).
+  */
+
+  const MEDIATOR = 'https://authn.io/mediator' + '?origin=' +
+    encodeURIComponent(window.location.origin);
+</script> #}
+<script>
+  async function onClickReceiveCredential() {
+    const credential = {{ verifiable_presentation }};
+    
+    // document.getElementById('storeResults').innerHTML = ''; // clear results
+
+    // fake OID4VC URL
+    let oid4vcUrl;
+    {
+      const searchParams = new URLSearchParams();
+      searchParams.set('issuer', 'https://example.edu/oid4vc-example');
+      searchParams.set(
+        'credential_type',
+        'https://example.org/examples#UniversityDegreeCredential');
+      searchParams.set('pre-authorized_code', 'not_real_12345');
+      searchParams.set('fake', JSON.stringify(credential));
+      oid4vcUrl = `openid-initiate-issuance://?${searchParams}`;
+    }
+    console.log('oid4vcUrl', oid4vcUrl);
+
+    // fake vcapi URL
+    let vcapiUrl;
+    {
+      const searchParams = new URLSearchParams();
+      searchParams.set('fakevp', JSON.stringify(credential));
+      vcapiUrl = 'https://vcapi.example/exchangers/z123/exchanges/z456?' +
+        searchParams;
+    }
+    console.log('vcapiUrl', vcapiUrl);
+
+    // construct the WebCredential wrapper around the credential to be stored
+    const credentialType = 'VerifiablePresentation';
+    const webCredentialWrapper = new WebCredential(
+      credentialType, credential, {
+        recommendedHandlerOrigins: [
+          'https://wallet.example.chapi.io/'
+        ],
+        protocols: {
+          OID4VC: oid4vcUrl,
+          vcapi: vcapiUrl
+        }
+      });
+
+
+    // Use Credential Handler API to store
+    const result = await navigator.credentials.store(webCredentialWrapper);
+    console.log('Result of receiving via store() request:', result);
+    
+    //
+    // if(!result) {
+    //   document.getElementById('storeResults').innerHTML = 'null result';
+    //   return;
+    // }
+
+    // document.getElementById('storeResults').innerHTML = JSON.stringify(result.data, null, 2);
+  }
+</script>

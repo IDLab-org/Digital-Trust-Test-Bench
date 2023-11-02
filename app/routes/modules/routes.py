@@ -9,9 +9,8 @@ from werkzeug.utils import secure_filename
 
 @bp.before_request
 def before_request_callback():
-  pass
-  # if not Session_check.check_online(session):
-  #       return redirect(url_for("auth.logout"))
+  if not Session_check.check_online(session):
+        return redirect(url_for("auth.logout"))
 
 @bp.route("/", methods=["GET"])
 def index():

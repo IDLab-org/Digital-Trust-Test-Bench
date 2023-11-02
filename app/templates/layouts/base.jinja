@@ -1,12 +1,16 @@
 <html lang="en">
 {% include 'layouts/head.jinja' %}
+
 <body class="d-flex flex-column theme-light">
     <div class="page page-center">
         {% include "layouts/header.jinja" %}
-        {% block page %}{% endblock %}
-        {% include 'layouts/footer.jinja' %}
+        <div class="page-wrapper">
+            {% block page %}{% endblock %}
+            {% include 'layouts/footer.jinja' %}
+        </div>
     </div>
     <script src="{{ url_for('static', filename='js/tabler.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
 </body>
+
 </html>

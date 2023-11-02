@@ -1,10 +1,12 @@
 from flask import Flask, session
+from flask_cors import CORS
 from config import Config
 import logging
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    CORS(app)
 
     if __name__ != "__main__":
         gunicorn_logger = logging.getLogger("gunicorn.error")
@@ -23,8 +25,8 @@ def create_app(config_class=Config):
 
     app.register_blueprint(main_bp)
 
-    from app.routes.modules import bp as modules_bp
+    from app.routes.test_suites import bp as test_suites_bp
 
-    app.register_blueprint(modules_bp, url_prefix="/modules")
+    app.register_blueprint(test_suites_bp, url_prefix="/test-suites")
 
     return app

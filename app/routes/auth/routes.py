@@ -1,37 +1,39 @@
 from flask import current_app, render_template, url_for, redirect, session, flash, request
 from app.routes.auth import bp
-from app.routes.auth.forms import BasicLoginForm, GithubLoginForm
 import json, requests, secrets, hashlib
-from pprint import pprint
-from config import Config
 from app.utils import qr_codes
-from app.utils.session_check import Session_check
 from app.utils.DTT_service import DTT_service
+from datetime import datetime
 
 @bp.before_request
 def before_request_callback():
     pass
-    ### Do not call the Session_check here because of infinite recursion
-    
+
 
 @bp.route("/", methods=["GET"])
 def index():
     return redirect(url_for("auth.login"))
 
-@bp.route("/email", methods=["GET", "POST"])
-def send_email():
-    payload = current_app.config["ACCOUNT_CREDENTIAL_OFFER"]
-    payload["credential"]["credentialSubject"] = {
-            "email": "demo.user@idlab.org",
-            "join_date": "20231024",
-            "full_name": "Demo User",
-            "organization": "IDLab"
-        }
-    r = requests.post(f"https://vc-api.dtt-cloud.idlab.app/workflows/credential-offer?anoncreds=True&handshake=False", json=payload)
-    credential_offer = r.json()["exchange-url"]
-    qr = qr_codes.generate(credential_offer)
-    preview = "Claim your DTT Credential"
-    return render_template("emails/credential_offer.jinja", qr=qr, preview=preview)
+
+@bp.route("/demo", methods=["GET"])
+def demo():
+    return render_template("pages/demo.jinja")
+
+# Route to send user onboarding email
+# @bp.route("/email", methods=["GET", "POST"])
+# def send_email():
+#     payload = current_app.config["ACCOUNT_CREDENTIAL_OFFER"]
+#     payload["credential"]["credentialSubject"] = {
+#             "email": "demo.user@idlab.org",
+#             "join_date": "20231024",
+#             "full_name": "Demo User",
+#             "organization": "IDLab"
+#         }
+#     r = requests.post(f"https://vc-api.dtt-cloud.idlab.app/workflows/credential-offer?anoncreds=True&handshake=False", json=payload)
+#     credential_offer = r.json()["exchange-url"]
+#     qr = qr_codes.generate(credential_offer)
+#     preview = "Claim your DTT Credential"
+#     return render_template("emails/credential_offer.jinja", qr=qr, preview=preview)
 
 @bp.route("/login", methods=["GET", "POST"])
 def login():
@@ -42,44 +44,65 @@ def login():
     session["presentation_exchange"] = session["presentation_request"].split("/")[-1]
 
     email = "demo.user@idlab.org"
-    username = email.split("@")[0]
-    organization = email.split("@")[1]
+    dt = datetime.now()
+    dt = dt.strftime('%Y-%m-%dT%H:%M:%SZ')
     payload = current_app.config["ACCOUNT_CREDENTIAL_OFFER"]
     payload["credential"]["credentialSubject"] = {
             "email": email,
-            "join_date": "20231024",
-            "full_name": username,
-            "organization": organization
+            "join_date": dt,
+            "full_name": email.split("@")[0],
+            "organization": email.split("@")[1]
         }
-    r = requests.post(f"https://vc-api.dtt-cloud.idlab.app/workflows/credential-offer?anoncreds=True&handshake=False", json=payload)
+    # Create a credential offer exchange record
+    r = requests.post(f"{current_app.config['VC_API_ENDPOINT']}/workflows/credential-offer?anoncreds=True&handshake=False", json=payload)
     qr_credential = qr_codes.generate(r.json()["exchange-url"])
+    credential = render_template("credentials/dttUser.jinja", email=email, issuance_date=dt)
+    credential = json.loads(credential)
+    payload = {
+        "credential": credential,
+        "options": {}
+    }
+    r = requests.post(f"{current_app.config['VC_API_ENDPOINT']}/credentials/issue", json=payload)
+    verifiable_credential = r.json()["verifiableCredential"]
+    verifiable_presentation = {
+      "@context": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://www.w3.org/2018/credentials/examples/v1"
+      ],
+      "type": "VerifiablePresentation",
+      "verifiableCredential": [verifiable_credential]
+    }
+    verifiable_presentation = json.dumps(verifiable_presentation)
 
-    return render_template("pages/login.jinja", title="Login | DTT", qr_presentation=qr_presentation, qr_credential=qr_credential)
+    return render_template("pages/login.jinja", title="Login | DTT", qr_presentation=qr_presentation, qr_credential=qr_credential, verifiable_presentation=verifiable_presentation)
 
 @bp.route("/vc_login", methods=["GET", "POST"])
 def vc_login():
     r = requests.get(f"{current_app.config['AGENT_ADMIN_ENDPOINT']}/present-proof-2.0/records/{session['presentation_exchange']}")
     if r.json().get("verified") and r.json()["verified"]:
+        # Grab the revealed email
         revealed_attributes = r.json()['by_format']['pres']['indy']['requested_proof']['revealed_attr_groups']['attrib_0']['values']
         session['user_info'] = {
             "email": revealed_attributes['email']['raw']
         }
-        session["online"] = True
+        # Delete the presentation exchange record
         r = requests.delete(f"{current_app.config['AGENT_ADMIN_ENDPOINT']}/present-proof-2.0/records/{session['presentation_exchange']}")
+        # Make sure the user workspace exist and provision it if it doesn't.
+        # Privisionning include setting up an allure server and (TODO) reference backchannels
+        data = {
+            "workspace_type": "private",
+            "workspace_label": session['user_info']['email']
+        }
+        r = requests.post(f"{current_app.config['DTT_SERVICE_URL']}/workspaces", json=data)
+        session['workspace_id'] = r.json()["workspace_id"]
+        session["online"] = True
         return redirect(url_for("main.index"))
     flash({
         "title": "Unable to verify",
         "error": None,
         "message": "Couldn't verify proof, please use another login method or try again"
     })    
-    return redirect(url_for("auth.logout"))
-
-@bp.route("/logout", methods=["GET"])
-def logout():
-    session.clear()
     return redirect(url_for("auth.login"))
-
-#--  Following 2 routes are for github login
 
 # '/github_login' - Starts the login process
 # calls DTT Service's /auth/github/authorize (no parameters)
@@ -108,6 +131,13 @@ def github_login():
         return redirect(url_for("auth.logout"))  # TBD - Redirect to a better error page
 
     return redirect(r.json()['authorization_url'])
+
+@bp.route("/logout", methods=["GET"])
+def logout():
+    session.clear()
+    return redirect(url_for("auth.login"))
+
+#--  Following 2 routes are for github login
 
 # '/github-callback' is called after github's authorization page was displayed to the user and they accepted.
 # This route is invoked as a redirect page by github's authorization function
@@ -174,18 +204,23 @@ def github_callback():
     # https://docs.github.com/en/rest/users/emails?apiVersion=2022-11-28#list-email-addresses-for-the-authenticated-user
     # For more details: See https://idlab-org.atlassian.net/wiki/spaces/DTT/pages/1309900880/Login+with+github+-+Implementation+Notes
     response = DTT_service.request(method='get', route=f'/users/github-user', api_token=session["authorization_header"])  
-    github_profile=response.json()
+    github_profile = response.json()
+    session['user_info'] = {
+        "email": github_profile['emails'][0]['email'],
+        "username": github_profile['login'],
+        "organization": github_profile['company']
+    }
     # r = requests.post('https://vc-api.dtt.idlab.app/workflows/credential-offer')
 
-    # # Fetch personal workspace info, create if it doesn't exist
-    # workspace_type = 'private'
-    # workspace_id = hashlib.md5(github_profile['login'].encode('utf-8')).hexdigest()
-    # r = requests.post(f'{current_app.config["DTT_MODULES_URL"]}/workspaces?workspace_type={workspace_type}&workspace_id={workspace_id}')
-    # session['workspaces'] = {
-    #     "private": r.json(),
-    #     "shared": [],
-    #     "public": []
-    # }
+
+    # Make sure the user workspace exist and provision it if it doesn't
+    data = {
+        "workspace_type": "private",
+        "workspace_label": session['user_info']['email']
+    }
+    r = requests.post(f"{current_app.config['DTT_SERVICE_URL']}/workspaces", json=data)
+    session['workspace_id'] = r.json()["workspace_id"]
+    session["online"] = True
     # # if session['user_info']['organization']:
     # #     body = {
     # #         "name": session['user_info']['organization'],
@@ -194,12 +229,6 @@ def github_callback():
     # #     response = DTT_service.request(method='post', route=f'/workspaces', json_params=body, api_token=session["authorization_header"])
 
     # # some user info gets stored into the session object
-    session['user_info'] = {
-        "email": github_profile['emails'][0]['email'],
-        "username": github_profile['login'],
-        "organization": github_profile['company']
-    }
-    session["online"] = True
 
     # # Create a credential offer for the user
     # schema = {

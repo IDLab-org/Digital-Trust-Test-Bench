@@ -12,50 +12,6 @@
     "id": "did:example:ebfeb1f712ebc6f1c276e12ec21",
     "alumniOf": "Example University"
   },
-  "credentialStatus": {
-    "id": "https://example.edu/status/24",
-    "type": "CredentialStatusList2017"
-  },
-  "credentialSchema": {
-    "id": "https://example.org/examples/degree.json",
-    "type": "JsonSchemaValidator2018"
-  },
-  "refreshService": {
-    "id": "https://example.edu/refresh/3732",
-    "type": "ManualRefreshService2018"
-  },
-  "termsOfUse": [
-    {
-      "type": "IssuerPolicy",
-      "id": "http://example.com/policies/credential/4",
-      "profile": "http://example.com/profiles/credential",
-      "prohibition": [
-        {
-          "assigner": "https://example.edu/issuers/14",
-          "assignee": "AllVerifiers",
-          "target": "http://example.edu/credentials/3732",
-          "action": [
-            "Archival"
-          ]
-        }
-      ]
-    }
-  ],
-  "evidence": [{
-    "id": "https://example.edu/evidence/f2aeec97-fc0d-42bf-8ca7-0548192d4231",
-    "type": ["DocumentVerification"],
-    "verifier": "https://example.edu/issuers/14",
-    "evidenceDocument": "DriversLicense",
-    "subjectPresence": "Physical",
-    "documentPresence": "Physical"
-  },{
-    "id": "https://example.edu/evidence/f2aeec97-fc0d-42bf-8ca7-0548192dxyzab",
-    "type": ["SupportingActivity"],
-    "verifier": "https://example.edu/issuers/14",
-    "evidenceDocument": "Fluid Dynamics Focus",
-    "subjectPresence": "Digital",
-    "documentPresence": "Digital"
-  }],
   "proof": {
     "type": "RsaSignature2018",
     "created": "2017-06-18T21:19:10Z",
