@@ -1,6 +1,5 @@
 
 
-
 def vc_profiler(vc):
     profile = {}
     features = ["basic", "schema", "refresh", "evidence", "status", "tou", "ldp", "jwt", "zkp"]

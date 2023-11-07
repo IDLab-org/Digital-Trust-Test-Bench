@@ -8,13 +8,20 @@ data:
     {
       "generator": "/bin/cat",
       "presentationGenerator": "/bin/cat",
-      "generatorOptions": "input.jsonld",
+      "generatorOptions": "",
+      "restapi": {
+        "baseUrl": "{{ endpoint }}",
+        "generator": "/credentials/issue",
+        "presentationGenerator": "/presentations/prove",
+        "generatorOptions": {},
+        "oauthTokenType": "Bearer",
+        "oauthToken": "{{ token }}"
+      },
       "sectionsNotSupported": {{ unsupported_features }},
       "jwt":{}
     }
-  input.jsonld: '{{ verifiable_credential }}'
   run_test_suite.sh: |
     #! /bin/bash
-    npm test
+    npm run report
     ./send_results.sh
     # npx allure-commandline serve -h 0.0.0.0 -p 8000

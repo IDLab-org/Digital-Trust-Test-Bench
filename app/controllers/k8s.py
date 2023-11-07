@@ -270,19 +270,59 @@ def deploy_allure_server(
         pass
     return {"success": "Allure deployed"}
 
-def launch_vc_test_suite(namespace, verifiable_credential, unsupported_features):
+def launch_data_model_test_suite(namespace, verifiable_credential, unsupported_features):
     get_config()
     env = Environment(loader=PackageLoader("app.controllers"))
     configmap_body = yaml.load(
-        env.get_template("vc-test-suite/configmap.yaml").render(
+        env.get_template("test-suites/data-model/configmap.yaml").render(
             unsupported_features=unsupported_features,
             verifiable_credential=verifiable_credential
         ),
         Loader=yaml.Loader,
     )
     job_body = yaml.load(
-        env.get_template("vc-test-suite/job.yaml").render(
+        env.get_template("test-suites/data-model/job.yaml").render(
             image="idlaborg/vc-test-suite:positive-0.0.3",
+            ALLURE_SERVER="http://allure:5050",
+            PROJECT_ID="data-model",
+        ),
+        Loader=yaml.Loader,
+    )
+    try:
+        try:
+            client.CoreV1Api().create_namespaced_config_map(
+                namespace=namespace,
+                body=configmap_body,
+            )
+        except:
+            client.CoreV1Api().patch_namespaced_config_map(
+                name="data-model",
+                namespace=namespace,
+                body=configmap_body,
+            )
+        client.BatchV1Api().create_namespaced_job(
+            namespace=namespace,
+            body=job_body,
+        )
+    except client.exceptions.ApiException:
+        return False
+    return True
+
+def launch_vc_test_suite(namespace, endpoint, token, unsupported_features):
+    get_config()
+    env = Environment(loader=PackageLoader("app.controllers"))
+    configmap_body = yaml.load(
+        env.get_template("test-suites/vc-test-suite/configmap.yaml").render(
+            unsupported_features=unsupported_features,
+            endpoint=endpoint,
+            token=token
+        ),
+        Loader=yaml.Loader,
+    )
+    job_body = yaml.load(
+        env.get_template("test-suites/vc-test-suite/job.yaml").render(
+            image="idlaborg/vc-test-suite:credivera-0.0.1",
+            name="vc-test-suite",
             ALLURE_SERVER="http://allure:5050",
             PROJECT_ID="vc-test-suite",
         ),
@@ -297,6 +337,45 @@ def launch_vc_test_suite(namespace, verifiable_credential, unsupported_features)
         except:
             client.CoreV1Api().patch_namespaced_config_map(
                 name="vc-test-suite",
+                namespace=namespace,
+                body=configmap_body,
+            )
+        client.BatchV1Api().create_namespaced_job(
+            namespace=namespace,
+            body=job_body,
+        )
+    except client.exceptions.ApiException:
+        return False
+    return True
+
+def launch_vc_playground_test_suite(namespace, issuer, verifier):
+    get_config()
+    env = Environment(loader=PackageLoader("app.controllers"))
+    configmap_body = yaml.load(
+        env.get_template("test-suites/vc-playground-test-suite/configmap.yaml").render(
+            issuer=issuer,
+            verifier=verifier
+        ),
+        Loader=yaml.Loader,
+    )
+    job_body = yaml.load(
+        env.get_template("test-suites/vc-playground-test-suite/job.yaml").render(
+            name="vc-playground-test-suite",
+            image="idlaborg/vc-playground-test-suite:0.3",
+            ALLURE_SERVER="http://allure:5050",
+            PROJECT_ID="vc-playground-test-suite",
+        ),
+        Loader=yaml.Loader,
+    )
+    try:
+        try:
+            client.CoreV1Api().create_namespaced_config_map(
+                namespace=namespace,
+                body=configmap_body,
+            )
+        except:
+            client.CoreV1Api().patch_namespaced_config_map(
+                name="vc-playground-test-suite",
                 namespace=namespace,
                 body=configmap_body,
             )

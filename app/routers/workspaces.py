@@ -12,11 +12,7 @@ async def list_workspaces():
     namespaces = [namespace for namespace in namespaces if "workspace" in  namespace]
     return namespaces
 
-@router.post(
-    "", 
-    tags=["Workspaces"], 
-    summary="Create workspace"
-)
+@router.post("", tags=["Workspaces"], summary="Create workspace")
 async def create_workspace(create_workspace_input: CreateWorkspaceInput, request: Request, workspace_type: str = None):
     workspace_label = vars(create_workspace_input)["workspace_label"]
     workspace_type = vars(create_workspace_input)["workspace_type"]
@@ -36,11 +32,7 @@ async def create_workspace(create_workspace_input: CreateWorkspaceInput, request
 
     return {"workspace_id": namespace}
 
-# @router.delete(
-#     "", 
-#     tags=["Workspaces"], 
-#     summary="Delete workspace"
-# )
+# @router.delete("", tags=["Workspaces"], summary="Delete workspace")
 # async def delete_workspace(create_workspace_input: CreateWorkspaceInput):
 #     workspace = vars(create_workspace_input)
 #     if workspace['scope'] not in ['private', 'organization']:

@@ -25,11 +25,30 @@ vc_input = {
     }
   }
 
-class VCTestSuiteV1Input(BaseModel):
+class VCDataModelV1Input(BaseModel):
     workspace_id: str = ''
     verifiable_credential: dict = vc_input
     # supported_features: list = Field(example=["basic", "schema", "refresh", "evidence", "status", "tou", "ldp", "jwt", "zkp"])
 
+
+class VCTestSuiteV1Input(BaseModel):
+    workspace_id: str = ''
+    endpoint: str = ""
+    token: str = ""
+    unsupported_features: list = ["basic", "schema", "refresh", "evidence", "status", "tou", "ldp", "jwt", "zkp"]
+
+class VCPlaygroundTestSuite(BaseModel):
+    workspace_id: str = ''
+    issuer: dict = {
+        "id": "MATTR",
+        "label": "MATTR",
+        "endpoint": "https://platform.interop.mattrlabs.io/vc-http-api/v1/credentials",
+    }
+    verifier: dict = {
+        "id": "MATTR",
+        "label": "MATTR",
+        "endpoint": "https://platform.interop.mattrlabs.io/vc-http-api/v1/credentials/verify",
+    }
 
 
 class CreateWorkspaceInput(BaseModel):

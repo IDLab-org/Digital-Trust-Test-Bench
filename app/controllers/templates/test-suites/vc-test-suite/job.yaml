@@ -25,30 +25,18 @@ spec:
             - configMapRef:
                 name: allure-env
           volumeMounts:
-            - mountPath: /vc-test-suite/input.jsonld
-              name: input
-              subPath: input.jsonld
-            - mountPath: /vc-test-suite/config.json
+            - mountPath: /test-suite/config.json
               name: config
               subPath: config.json
-            - mountPath: /vc-test-suite/run_test_suite.sh
+            - mountPath: /test-suite/run_test_suite.sh
               name: run-test-suite
               subPath: run_test_suite.sh
-            - mountPath: /vc-test-suite/send_results.sh
+            - mountPath: /test-suite/send_results.sh
               name: send-results
               subPath: send_results.sh
-            - mountPath: /vc-test-suite/send_results_secure.sh
-              name: send-results-secure
-              subPath: send_results_secure.sh
           tty: true
           command: [ "./run_test_suite.sh" ]
       volumes:
-        - name: input
-          configMap:
-            name: vc-test-suite
-            items:
-              - key: input.jsonld
-                path: input.jsonld
         - name: config
           configMap:
             name: vc-test-suite
@@ -69,13 +57,6 @@ spec:
             items:
               - key: send_results.sh
                 path: send_results.sh
-        - name: send-results-secure
-          configMap:
-            defaultMode: 0777
-            name: allure-send-results-secure
-            items:
-              - key: send_results_secure.sh
-                path: send_results_secure.sh
       restartPolicy: Never
       concurrencyPolicy: Forbid
   ttlSecondsAfterFinished: 1
