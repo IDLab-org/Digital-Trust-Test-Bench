@@ -1,0 +1,83 @@
+{% extends 'layouts/base_min.jinja' %}
+{% block page %}
+<div class="page-header d-print-none mb-3">
+    <div class="container-xl">
+        <div id="test-runtime-modal"></div>
+        <div class="row g-2 align-items-center">
+            <div class="col">
+                <div class="page-pretitle mb-1">
+                    <ol class="breadcrumb" aria-label="breadcrumbs">
+                        <li class="breadcrumb-item" aria-current="page"><a href="{{ url_for('main.index') }}">Home</a>
+                        </li>
+                        <li class="breadcrumb-item" aria-current="page"><a
+                                href="{{ url_for('test_suites.index') }}">Test-Suites</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="#">VC Playground</a></li>
+                    </ol>
+                </div>
+                <h2 class="page-title">VC Playground</h2>
+            </div>
+            <div class="col-auto ms-auto d-print-none">
+                <div class="btn-list">
+                    <a target="_blank" href="{{ report_url }}" class="btn btn-primary d-none d-sm-inline-block">
+                        View latest report
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="page-body">
+    <div class="container-xl">
+        <form method="post" onsubmit="testRuntimeModal('Running test-suite')">
+            {{ form.hidden_tag() }}
+            <div class="row row-cards">
+                <div class="col-md-3 col-lg-3">
+                    <div class="form-floating mb-3">
+                        {{ form.implementation(class="form-select", id="floating-input", autocomplete="off") }}
+                        {{ form.implementation.label(for="floating-input") }}
+                    </div>
+                    <div class="hr-text hr-text-center hr-text-spaceless mt-3 mb-3">OR</div>
+                    <div class="form-floating mb-3">
+                        {{ form.endpoint(class="form-control", id="floating-input", autocomplete="off") }}
+                        {{ form.endpoint.label(for="floating-input") }}
+                    </div>
+                    {{ form.submit(class="btn btn-primary w-100") }}
+                    {% include('components/test_runtime_modal.jinja') %}
+                </div>
+            </div>
+        </form>
+    </div>
+    {# <div class="row row-cards">
+        <div class="col-md-4">
+
+            <div class="mb-3">
+                <div class="mb-3">
+                    {{ form.issuer.label(class="card-title mb-3") }}
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            https://
+                        </span>
+                        {{ form.issuer_endpoint(class="form-control", placeholder="vc-api.dtt.idlab.app/credentials/issue", autocomplete="off") }}
+                    </div>
+                    <div class="hr-text hr-text-center hr-text-spaceless mt-3 mb-3">OR</div>
+                    {{ form.issuer(class="form-select") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.verifier.label(class="card-title mb-3") }}
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            https://
+                        </span>
+                        {{ form.verifier_endpoint(class="form-control", placeholder="vc-api.dtt.idlab.app/credentials/verify", autocomplete="off") }}
+                    </div>
+                    <div class="hr-text hr-text-center hr-text-spaceless mt-3 mb-3">OR</div>
+                    {{ form.verifier(class="form-select") }}
+                </div>
+                {{ form.submit(class="btn btn-primary w-100") }}
+                {% include('components/test_runtime_modal.jinja') %}
+
+            </div>
+        </div>
+    </div> #}
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'layouts/base_min.jinja' %}
+{% block page %}
+<div class="page-header d-print-none mb-3">
+    <div class="container-xl">
+        <div class="row g-2 align-items-center">
+            <div class="col">
+                <div class="page-pretitle mb-1">
+                    <ol class="breadcrumb" aria-label="breadcrumbs">
+                        <li class="breadcrumb-item" aria-current="page"><a
+                                href="{{ url_for('main.index') }}">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="#">Test-Suites</a></li>
+                    </ol>
+                </div>
+                <h2 class="page-title">Test Suites</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="page-body">
+    <div class="container">
+        <div class="row row-cards">
+            <div class="col-md-6">
+                <a href="{{ url_for('test_suites.data_model') }}" class="card mb-3">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-title">Data Model</h3>
+                            <p class="card-subtitle">
+                                Provide a verifiable credential and test it
+                            </p>
+                        </div>
+                    </div>
+                </a>
+                <a href="{{ url_for('test_suites.vc_test_suite') }}" class="card mb-3">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-title">VC Test Suite</h3>
+                            <p class="card-subtitle">
+                                Run the W3C vc-test-suite
+                            </p>
+                        </div>
+                    </div>
+                </a>
+                <a href="{{ url_for('test_suites.vc_playground_test_suite') }}" class="card mb-3">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-title">VC Playground</h3>
+                            <p class="card-subtitle">
+                                Run the vc-playground-test-suite
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

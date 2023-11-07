@@ -22,7 +22,7 @@ class MultiCheckboxField(SelectMultipleField):
     widget = ListWidget(prefix_label=False)
     option_widget = CheckboxInput()
 
-# Keeping this code even if unused - in case we need basic authtntication in the future
+# Keeping this code even if unused - in case we need basic authentication in the future
 
 class BasicLoginForm(FlaskForm):
     email = EmailField("Email Address", [validators.DataRequired(), validators.Email("Enter a valid email address")])

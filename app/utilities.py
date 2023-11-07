@@ -3,6 +3,12 @@ from qrcode.image.styles.moduledrawers.svg import SvgPathCircleDrawer
 import json, requests, secrets, hashlib
 
 
+def get_primary_email(github_profile):
+    for email in github_profile["emails"]:
+        if email["primary"]:
+            return email["email"]
+    return github_profile["emails"][0]["email"]
+
 def check_workspace(workspace_id):
     pass
 # Create workspace
