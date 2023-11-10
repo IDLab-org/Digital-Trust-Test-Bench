@@ -31,3 +31,5 @@ class Config(object):
             }
         }
     }
+
+    BACKCHANNEL_IMAGES = ["afj","acapy","afgo","dotnet","vcx", "findy"]
