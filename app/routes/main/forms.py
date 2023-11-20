@@ -13,6 +13,7 @@ from wtforms import (
 )
 from wtforms.validators import DataRequired, Length
 
+
 class MultiCheckboxField(SelectMultipleField):
     widget = ListWidget(prefix_label=False)
     option_widget = CheckboxInput()

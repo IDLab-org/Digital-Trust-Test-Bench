@@ -30,6 +30,8 @@ environment:
     ENV: production
     DEBUG: False
     TESTING: False
+    REDIS_URL: redis://redis.dtt-storage:6379
+    POSTGRES_URL: postgresql://postgres.dtt-storage:5432
     DTT_SERVICE_URL: http://dtt-service:8000
     VC_API_ENDPOINT: https://vc-api.dtt-cloud.idlab.app
     AGENT_ENDPOINT: https://agent.dtt-cloud.idlab.app

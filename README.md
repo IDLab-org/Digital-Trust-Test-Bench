@@ -33,6 +33,11 @@ DTT_SERVICE_URL=http://localhost:8000 # Use a running DTT-Service instance
 kubctl port-forward svc/allure 5050:5050
 ```
 
+### To enable the session storage, you need to port-forward the redis service from the dtt-storage namespace
+```
+kubectl port-forward -n dtt-storage svc/redis 6379:6379
+```
+
 ### Run the application
 ```python start.py```
 

@@ -1,12 +1,15 @@
 from flask import Flask, send_file
+from flask_session import Session
 from flask_cors import CORS
 from config import Config
 import logging
+
 
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     CORS(app)
+    Session(app)
 
     if __name__ != "__main__":
         gunicorn_logger = logging.getLogger("gunicorn.error")
@@ -15,7 +18,7 @@ def create_app(config_class=Config):
 
     @app.route("/favicon.ico", methods=["GET"])
     def favicon():
-        return send_file("static/favicon.png", mimetype='image/gif')
+        return send_file("static/favicon.png", mimetype="image/gif")
 
     from app.errors import bp as errors_bp
 

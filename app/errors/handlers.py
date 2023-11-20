@@ -3,6 +3,7 @@ from werkzeug.exceptions import HTTPException
 from app.errors import bp
 import json
 
+
 @bp.app_errorhandler(HTTPException)
 def handle_exception(error):
     # response = error.get_response()
