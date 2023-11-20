@@ -5,6 +5,7 @@ from jinja2 import Environment, PackageLoader
 import yaml
 import hashlib
 import time
+from pprint import pprint
 
 
 def get_config():
@@ -56,62 +57,130 @@ def list_backchannels(namespace):
 
 
 def deploy_backchannel(
-    agent_label, agent_framework, ledger_url, tails_url, namespace
-):
-    backchannel_id = hashlib.md5(agent_label.encode("utf-8")).hexdigest()
-    env = Environment(loader=PackageLoader("app.controller"))
+        workspace_id,
+        backchannel_info,
+        ledger_url,
+        tails_url
+    ):
+    get_config()
+    env = Environment(loader=PackageLoader("app.controllers"))
+    if backchannel_info["framework"] == "acapy":
+        configmap_body = yaml.load(
+            env.get_template("backchannels/configmap.yaml").render(),
+            Loader=yaml.Loader,
+        )
+        try:
+            client.CoreV1Api().create_namespaced_config_map(
+                namespace=workspace_id,
+                body=configmap_body,
+            )
+        except client.exceptions.ApiException:
+            pass
+    deployment_body = yaml.load(
+        env.get_template("backchannels/deployment.yaml").render(
+            framework=backchannel_info["framework"],
+            name=f'aath-backchannel-{backchannel_info["framework"]}',
+            image=backchannel_info["image"],
+            entrypoint=backchannel_info["entrypoint"],
+            ports=backchannel_info["ports"],
+            tails_server_url=tails_url,
+            ledger_server_url=ledger_url,
+            agent_name=backchannel_info["label"],
+            agent_public_endpoint=backchannel_info["public_endpoint"]
+        ),
+        Loader=yaml.Loader,
+    )
+    service_body = yaml.load(
+        env.get_template("backchannels/service.yaml").render(
+            backchannel_id=backchannel_info["framework"],
+            ports=backchannel_info["ports"],
+        ),
+        Loader=yaml.Loader,
+    )
+    ingress_body = yaml.load(
+        env.get_template("backchannels/ingress.yaml").render(
+            backchannel_id=backchannel_info["framework"],
+            ports=backchannel_info["ports"],
+            endpoint=backchannel_info["endpoint"].replace("https://", ""),
+        ),
+        Loader=yaml.Loader,
+    )
+    # try:
     try:
-        get_config()
-        client.CoreV1Api().create_namespaced_config_map(
-            namespace=namespace,
-            body=yaml.load(
-                env.get_template("backchannels/configmap.yaml").render(
-                    backchannel_id=backchannel_id,
-                    agent_label=agent_label,
-                    base_domain=settings.DOMAIN,
-                    ledger_url=ledger_url,
-                    tails_url=tails_url,
-                    cloud_agency_url="",
-                    aip_config="10",
-                ),
-                Loader=yaml.Loader,
-            ),
-        )
         client.AppsV1Api().create_namespaced_deployment(
-            namespace=namespace,
-            body=yaml.load(
-                env.get_template("backchannels/deployment.yaml").render(
-                    backchannel_id=backchannel_id,
-                    framework=agent_framework,
-                    image=settings.BACKCHANNELS[agent_framework]["image"],
-                    command=settings.BACKCHANNELS[agent_framework]["command"],
-                    args=settings.BACKCHANNELS[agent_framework]["args"],
-                ),
-                Loader=yaml.Loader,
-            ),
-        )
-        client.CoreV1Api().create_namespaced_service(
-            namespace=namespace,
-            body=yaml.load(
-                env.get_template("backchannels/service.yaml").render(
-                    backchannel_id=backchannel_id
-                ),
-                Loader=yaml.Loader,
-            ),
-        )
-        client.NetworkingV1Api().create_namespaced_ingress(
-            namespace=namespace,
-            body=yaml.load(
-                env.get_template("backchannels/ingress.yaml").render(
-                    backchannel_id=backchannel_id,
-                    base_domain=settings.DOMAIN,
-                ),
-                Loader=yaml.Loader,
-            ),
+            namespace=workspace_id,
+            body=deployment_body,
         )
     except client.exceptions.ApiException:
-        return {"error": "Kubernetes client error, maybe a ressource already exists"}
-    return {"success": "Backchannel deployed", "backchannel_id": backchannel_id}
+        pass
+    try:
+        client.CoreV1Api().create_namespaced_service(
+            namespace=workspace_id,
+            body=service_body,
+        )
+    except client.exceptions.ApiException:
+        pass
+    try:
+        client.NetworkingV1Api().create_namespaced_ingress(
+            namespace=workspace_id,
+            body=ingress_body,
+        )
+    except client.exceptions.ApiException:
+        pass
+    return True
+    # env = Environment(loader=PackageLoader("app.controller"))
+    # try:
+    #     get_config()
+    #     client.CoreV1Api().create_namespaced_config_map(
+    #         namespace=namespace,
+    #         body=yaml.load(
+    #             env.get_template("backchannels/configmap.yaml").render(
+    #                 backchannel_id=backchannel_id,
+    #                 agent_label=agent_label,
+    #                 base_domain=settings.DOMAIN,
+    #                 ledger_url=ledger_url,
+    #                 tails_url=tails_url,
+    #                 cloud_agency_url="",
+    #                 aip_config="10",
+    #             ),
+    #             Loader=yaml.Loader,
+    #         ),
+    #     )
+    #     client.AppsV1Api().create_namespaced_deployment(
+    #         namespace=namespace,
+    #         body=yaml.load(
+    #             env.get_template("backchannels/deployment.yaml").render(
+    #                 backchannel_id=backchannel_id,
+    #                 framework=agent_framework,
+    #                 image=settings.BACKCHANNELS[agent_framework]["image"],
+    #                 command=settings.BACKCHANNELS[agent_framework]["command"],
+    #                 args=settings.BACKCHANNELS[agent_framework]["args"],
+    #             ),
+    #             Loader=yaml.Loader,
+    #         ),
+    #     )
+    #     client.CoreV1Api().create_namespaced_service(
+    #         namespace=namespace,
+    #         body=yaml.load(
+    #             env.get_template("backchannels/service.yaml").render(
+    #                 backchannel_id=backchannel_id
+    #             ),
+    #             Loader=yaml.Loader,
+    #         ),
+    #     )
+    #     client.NetworkingV1Api().create_namespaced_ingress(
+    #         namespace=namespace,
+    #         body=yaml.load(
+    #             env.get_template("backchannels/ingress.yaml").render(
+    #                 backchannel_id=backchannel_id,
+    #                 base_domain=settings.DOMAIN,
+    #             ),
+    #             Loader=yaml.Loader,
+    #         ),
+    #     )
+    # except client.exceptions.ApiException:
+    #     return {"error": "Kubernetes client error, maybe a ressource already exists"}
+    # return {"success": "Backchannel deployed", "backchannel_id": backchannel_id}
 
 
 def remove_backchannel(backchannel_id, namespace):

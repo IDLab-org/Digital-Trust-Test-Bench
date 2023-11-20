@@ -2,70 +2,51 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backchannel-{{ backchannel_id }}
+  name: {{ name }}
   labels:
-    app: backchannel-{{ backchannel_id }}
+    app: {{ name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backchannel-{{ backchannel_id }}
+      app: {{ name }}
   template:
     metadata:
       labels:
-        app: backchannel-{{ backchannel_id }}
-        backchannel: {{ framework }}
+        app: {{ name }}
     spec:
       terminationGracePeriodSeconds: 1
       containers:
-        - name: backchannel-{{ backchannel_id }}
+        - name: {{ name }}
           image: {{ image }}
           imagePullPolicy: "IfNotPresent"
           ports:
-            - containerPort: 8020
-            - containerPort: 8021
-            - containerPort: 8022
-            - containerPort: 8023
-          command: {{ command }}
-          args: {{ args }}
-          # startupProbe:
-          #   httpGet:
-          #     path: /agent/command/status/
-          #     port: 8020
-          #   initialDelaySeconds: 10
-          #   periodSeconds: 10
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 8022
-          #     httpHeaders:
-          #     - name: accept
-          #       value: application/json
-          #   initialDelaySeconds: 20
-          #   failureThreshold: 5
-          #   periodSeconds: 5
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: 8022
-          #     httpHeaders:
-          #     - name: accept
-          #       value: application/json
-          #   initialDelaySeconds: 10
-          #   failureThreshold: 5
-          #   periodSeconds: 5
-          envFrom:
-            - configMapRef:
-                name: "backchannel-{{ backchannel_id }}-env"
-      #     volumeMounts:
-      #       - mountPath: /data-mount/plugin-config.yml
-      #         name: "plugin-config"
-      #         subPath: plugin-config.yml
-      #     tty: true
-      # volumes:
-      #   - name: "plugin-config"
-      #     configMap:
-      #       name: "plugin-config"
-      #       items:
-      #         - key: plugin-config.yml
-      #           path: plugin-config.yml
+          {% for port in ports %}
+            - containerPort: {{ port.port }}
+          {% endfor %}
+          entrypoint: {{ entrypoint }}
+          tty: true
+          env:
+            - name: AGENT_NAME
+              value: {{ agent_name }}
+            - name: TAILS_SERVER_URL
+              value: {{ tails_server_url }}
+            - name: LEDGER_URL
+              value: {{ ledger_server_url }}
+            - name: AGENT_PUBLIC_ENDPOINT
+              value: https://{{ agent_public_endpoint }}
+            - name: DOCKERHOST
+              value: localhost
+{% if framework == "acapy" %}
+          volumeMounts:
+            - mountPath: /data-mount/plugin-config.yml
+              name: "plugin-config"
+              subPath: plugin-config.yml
+      volumes:
+        - name: "plugin-config"
+          configMap:
+            name: "backchannel-config"
+            items:
+              - key: plugin-config.yml
+                path: plugin-config.yml
+{% endif %}

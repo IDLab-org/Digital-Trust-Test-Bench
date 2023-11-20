@@ -2,48 +2,22 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: backchannel-{{ backchannel_id }}-ingress
+  name: {{ name }}
   annotations:
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
-  - host: backchannel-{{ backchannel_id }}.{{ base_domain }}
+  - host: {{ public_endpoint }}
     http:
       paths:
+{% for port in ports %}
+{% if port.ingress %}
       - backend:
           service:
-            name: backchannel-{{ backchannel_id }}-svc
+            name: {{ name }}
             port:
-              number: 8020
+              number: {{ port.port }}
         path: /
         pathType: ImplementationSpecific
-  - host: inbound-{{ backchannel_id }}.{{ base_domain }}
-    http:
-      paths:
-      - backend:
-          service:
-            name: backchannel-{{ backchannel_id }}-svc
-            port:
-              number: 8021
-        path: /
-        pathType: ImplementationSpecific
-  - host: admin-{{ backchannel_id }}.{{ base_domain }}
-    http:
-      paths:
-      - backend:
-          service:
-            name: backchannel-{{ backchannel_id }}-svc
-            port:
-              number: 8022
-        path: /
-        pathType: ImplementationSpecific
-  - host: webhook-{{ backchannel_id }}.{{ base_domain }}
-    http:
-      paths:
-      - backend:
-          service:
-            name: backchannel-{{ backchannel_id }}-svc
-            port:
-              number: 8023
-        path: /
-        pathType: ImplementationSpecific
+{% endif %}
+{% endfor %}

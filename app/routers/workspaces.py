@@ -18,7 +18,6 @@ async def create_workspace(create_workspace_input: CreateWorkspaceInput, request
     workspace_type = vars(create_workspace_input)["workspace_type"]
     workspace_id = hashlib.md5(workspace_label.encode('utf-8')).hexdigest()
     namespace = f"workspace-{workspace_type}-{workspace_id}"
-    # status = requests.post(f"https:///workspaces?type={workspace_type}&id={workspace_id}")
 
     # Create namespace
     k8s.create_namespace(namespace)
@@ -26,9 +25,19 @@ async def create_workspace(create_workspace_input: CreateWorkspaceInput, request
     # Create allure server
     k8s.deploy_allure_server(namespace)
 
-    # # Create reference backchannels
-    # k8s.deploy_backchannel(namespace, "acapy")
-    # k8s.deploy_backchannel(namespace, "afj")
+    # Create reference backchannels
+    for framework in settings.AATH_BACKCHANNELS:
+        backchannel_info = settings.AATH_BACKCHANNELS[framework]
+        backchannel_info["label"] = f"Reference {framework} backchannel"
+        backchannel_info["public_endpoint"] = f"aath-backchannel-{framework}-{namespace.split('-')[-1]}.dtt-dev.idlab.app"
+        k8s.deploy_backchannel(
+            namespace,
+            backchannel_info,
+            settings.AATH_LEDGER_URL,
+            settings.AATH_TAILS_URL
+            )
+
+    # Create test-suite configurations
 
     return {"workspace_id": namespace}
 

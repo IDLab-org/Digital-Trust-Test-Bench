@@ -1,0 +1,22 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-harness
+data:
+  behave.ini: |
+    # -- FILE: behave.ini
+    [behave]
+    #include_re=0160-connection.feature
+    #include_re=0011-0183-revocation.feature
+    #junit = false
+    #junit_directory = ./reports
+    format=json.pretty
+    no_skipped=true
+    #logging_level = INFO
+
+    [behave.userdata]
+    # these should be set dynamically, when running under Docker
+    {% for agent in agents %}
+    {{ agent.label }} = {{ agent.backchannel_endpoint }}
+    {% endfor %}

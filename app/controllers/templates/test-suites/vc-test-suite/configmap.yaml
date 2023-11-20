@@ -24,4 +24,4 @@ data:
     #! /bin/bash
     npm run report
     ./send_results.sh
-    # npx allure-commandline serve -h 0.0.0.0 -p 8000
+    npx allure-commandline serve -h 0.0.0.0 -p 8000

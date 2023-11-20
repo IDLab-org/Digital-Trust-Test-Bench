@@ -54,3 +54,14 @@ class VCPlaygroundTestSuite(BaseModel):
 class CreateWorkspaceInput(BaseModel):
     workspace_label: str = Field(example="demo.user@idlab.org") 
     workspace_type: str = Field(example="private") 
+
+
+class DeployBackchannelInput(BaseModel):
+    workspace_id: str = Field(example="workspace-private-64220bf6a52c71843475d6dee399cb9a")
+    framework: str = Field(example="vcx")
+    label: str = Field(example="Reference VCX Backchannel")
+
+
+class RunTestHarnessInput(BaseModel):
+    tags: list = Field(example=["@issue-credential"])
+    agents: list = Field(example=[])
