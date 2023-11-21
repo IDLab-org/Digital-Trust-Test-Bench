@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Minimal Demo Verifier</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <!-- Compiled and minified Materialize JS/CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+  <!--Credential Handler API Polyfill-->
+  <script src="https://unpkg.com/credential-handler-polyfill@3/dist/credential-handler-polyfill.min.js"></script>
+  <script>
+        /*!
+        * Copyright (c) 2022 Digital Bazaar, Inc. All rights reserved.
+        */
+        'use strict'
+
+        /**
+        * Simple config file (to help test against local instances of authn.io, local
+        * wallets, etc).
+        */
+
+        const MEDIATOR = 'https://authn.io/mediator' + '?origin=' +
+        encodeURIComponent(window.location.origin);
+  </script>
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="card-panel">
+      <h5>Credential Handler API (CHAPI) Demo Verifier</h5>
+      <p><a href="https://github.com/credential-handler/credential-handler-polyfill">Read more about CHAPI</a></p>
+      <p>
+        If you have not yet picked a wallet and registered it with your browser,
+        try out the
+        <a href="https://wallet.example.chapi.io/">Demo Wallet</a>.
+      </p>
+
+      <p>This is a minimal credential Verifier application that demonstrates
+        how an app would ask the user for a credential
+        (using CHAPI's <code>get()</code> under the hood).
+      </p>
+
+      <p>When you click the Request button, a Verifiable Credential will
+        be requested from your digital wallet.
+      </p>
+
+      <a class="waves-effect waves-light btn" id="requestButton">Present a Credential</a>
+    </div>
+
+    <div class="card-panel hide" id="resultsPanel">
+      <h6>Result of get() operation:</h6>
+
+      <pre><code id="getResults"></code></pre>
+    </div>
+  </div>
+  <script>
+    async function onClickRequest() {
+      // create Verifiable Presentation Request
+      const testVpr = {
+        query: [{
+          type: "QueryByExample",
+          credentialQuery: {
+            reason: "Please present your University Degree to continue the teacher application process.",
+            example: {
+              "@context": [
+                "https://w3id.org/credentials/v1",
+                "https://www.w3.org/2018/credentials/examples/v1"
+              ],
+              type: ["UniversityDegreeCredential"],
+              credentialSubject: {
+                "id": "did:example:ebfeb1f712ebc6f1c276e12ec21"
+              }
+            }
+          }
+        }]
+      };
+
+      // fake OID4VP url
+      let oid4vpUrl;
+      {
+        const searchParams = new URLSearchParams();
+        searchParams.set('fake', JSON.stringify(testVpr));
+        oid4vpUrl = `https://test.example?${searchParams}`;
+      }
+      console.log('oid4vpUrl', oid4vpUrl);
+
+      // fake VC API url
+      let vcapiUrl;
+      {
+        const searchParams = new URLSearchParams();
+        searchParams.set('fakevpr', JSON.stringify(testVpr));
+        vcapiUrl = 'https://vcapi.example/exchangers/z123/exchanges/z456?' +
+          searchParams;
+      }
+      console.log('vcapiUrl', vcapiUrl);
+
+      // create Credential Interface Query
+      const credentialInterfaceQuery = {
+        web: {
+          VerifiablePresentation: testVpr,
+          /*recommendedHandlerOrigins: [
+            "https://wallet.example.chapi.io/"
+          ],*/
+          protocols: {
+            OID4VP: oid4vpUrl,
+            vcapi: vcapiUrl
+          }
+        }
+      };
+
+      console.log('Requesting credential...');
+      document.getElementById('getResults').innerText = 'Requesting credential...';
+
+      const result = await navigator.credentials.get(credentialInterfaceQuery);
+
+      document.getElementById('resultsPanel').classList.remove('hide');
+      document.getElementById('getResults').innerText = JSON.stringify(result, null, 2);
+
+      console.log('Result of get() request:', JSON.stringify(result, null, 2));
+    }
+
+    function ready(fn) {
+      if (document.readyState !== 'loading') {
+        fn();
+      } else {
+        document.addEventListener('DOMContentLoaded', fn);
+      }
+    }
+
+    ready(() => {
+      document.getElementById('requestButton').addEventListener('click', onClickRequest);
+      console.log('Document ready.')
+    })
+
+    credentialHandlerPolyfill
+      .loadOnce(MEDIATOR)
+      .then(console.log('Polyfill loaded.'))
+      .catch(e => console.error('Error loading polyfill:', e));
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,30 @@
+{% extends 'layouts/base_min.jinja' %}
+{% block page %}
+
+<div class="page-wrapper">
+    <div class="page-header d-print-none mb-5">
+        <div class="container-xl">
+            <div class="row g-2 align-items-center">
+                <div class="col">
+                    <div class="page-pretitle mb-1">
+                        <ol class="breadcrumb" aria-label="breadcrumbs">
+                            <li class="breadcrumb-item" aria-current="page"><a href="{{ url_for('main.index') }}">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page"><a href="#">Reports</a></li>
+                        </ol>
+                    </div>
+                    <h2 class="page-title">Reports</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-body">
+        <div class="container container-tight py-4">
+            <div class="text-center">
+                {% for project in projects %}
+                    <a href="#" class="btn btn-pill w-50 mb-3">{{ project }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,89 @@
+{% extends 'layouts/base_min.jinja' %}
+{% block page %}
+<div class="page-header d-print-none mb-3">
+    <div class="container-xl">
+        <div class="row g-2 align-items-center">
+            <div class="col">
+                <div class="page-pretitle mb-1">
+                    <ol class="breadcrumb" aria-label="breadcrumbs">
+                        <li class="breadcrumb-item active" aria-current="page"><a href="#">Home</a></li>
+                    </ol>
+                </div>
+                <h2 class="page-title">Welcome!</h2>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="page-body">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-sm-6 col-lg-3 mb-3">
+                <a href="{{ url_for('test_suites.index') }}" class="btn w-100">
+                    <div class="card-sm">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <i class="icon icon-lg bi bi-wrench-adjustable-circle"></i>
+                                    </span>
+                                </div>
+                                <div class="col">
+                                    <div class="font-weight-medium">
+                                        Credentials
+                                    </div>
+                                    <div class="text-secondary">
+                                        Test Suites
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-6 col-lg-3 mb-3">
+                <a href="#" class="btn w-100">
+                    <div class="card-sm">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <i class="icon icon-lg bi bi-phone-vibrate"></i>
+                                    </span>
+                                </div>
+                                <div class="col">
+                                    <div class="font-weight-medium">
+                                        Exchange
+                                    </div>
+                                    <div class="text-secondary">
+                                        Test Harness
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-sm-6 col-lg-3 mb-3">
+                <a href="{{ url_for('main.reports') }}" class="btn w-100">
+                    <div class="card-sm">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <i class="icon icon-lg bi bi-file-bar-graph"></i>
+                                    </span>
+                                </div>
+                                <div class="col">
+                                    <div class="font-weight-medium">
+                                        Projects
+                                    </div>
+                                    <div class="text-secondary">
+                                        Reports
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

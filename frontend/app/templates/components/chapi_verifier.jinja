@@ -1,0 +1,98 @@
+<script src="https://unpkg.com/credential-handler-polyfill@3/dist/credential-handler-polyfill.min.js"></script>
+<script>
+    /*!
+  * Copyright (c) 2022 Digital Bazaar, Inc. All rights reserved.
+  */
+  'use strict'
+
+  /**
+  * Simple config file (to help test against local instances of authn.io, local
+  * wallets, etc).
+  */
+
+  const MEDIATOR = 'https://authn.io/mediator' + '?origin=' +
+    encodeURIComponent(window.location.origin);
+</script>
+<script>
+  async function onClickPresentationRequest() {
+    
+    // create Verifiable Presentation Request
+    const vprInfo = {
+      query: [{
+        type: "QueryByExample",
+        credentialQuery: {
+          reason: "Please share your email.",
+          example: {
+            "@context": [
+              "https://w3id.org/credentials/v1"
+            ],
+            issuer: "did:web",
+            type: ["DTTCredential"],
+            credentialSubject: {}
+          }
+        }
+      }]
+    };
+
+    // fake OID4VP url
+    let oid4vpUrl;
+    {
+      const searchParams = new URLSearchParams();
+      searchParams.set('fake', JSON.stringify(vprInfo));
+      oid4vpUrl = `https://test.example?${searchParams}`;
+    }
+    console.log('oid4vpUrl', oid4vpUrl);
+
+    // fake VC API url
+    let vcapiUrl;
+    {
+      const searchParams = new URLSearchParams();
+      searchParams.set('fakevpr', JSON.stringify(vprInfo));
+      vcapiUrl = 'https://vcapi.example/exchangers/z123/exchanges/z456?' +
+        searchParams;
+    }
+    console.log('vcapiUrl', vcapiUrl);
+
+    // create Credential Interface Query
+    const credentialInterfaceQuery = {
+      web: {
+        VerifiablePresentation: vprInfo,
+        /*recommendedHandlerOrigins: [
+          "https://wallet.example.chapi.io/"
+        ],*/
+        protocols: {
+          OID4VP: oid4vpUrl,
+          vcapi: vcapiUrl
+        }
+      }
+    };
+
+    console.log('Requesting credential...');
+
+    var result = await navigator.credentials.get(credentialInterfaceQuery);
+    result['data']['proof'] = 
+
+    
+
+    console.log('Result of get() request:', JSON.stringify(result, null, 2));
+  }
+
+
+  function ready(fn) {
+    if (document.readyState !== 'loading') {
+      fn();
+    } else {
+      document.addEventListener('DOMContentLoaded', fn);
+    }
+  }
+
+  ready(() => {
+    document.getElementById('requestPresentationButton').addEventListener('click', onClickPresentationRequest);
+    console.log('Document ready.')
+  })
+
+  credentialHandlerPolyfill
+    .loadOnce(MEDIATOR)
+    .then(console.log('Polyfill loaded.'))
+    .catch(e => console.error('Error loading polyfill:', e));
+</script>

@@ -1,0 +1,100 @@
+<header class="navbar navbar-expand-md d-print-none">
+    <div class="container-xl">
+        {# <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu"
+            aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button> #}
+        {# <h1 class="navbar-brand navbar-brand-autodark d-none-navbar-horizontal pe-0 pe-md-3">
+            <a href="{{ url_for('main.index') }}">
+                <img src="{{ url_for('static', filename='favicon.png') }}" alt="IDLab" class="navbar-brand-image">
+            </a>
+        </h1> #}
+        <div class="navbar-nav flex-row order-md-last">
+            {# <div class="nav-item dropdown d-none d-md-flex">
+                {% include 'components/invitations.jinja' %}
+            </div>
+            <div class="nav-item me-5">
+                <div class="nav-link d-flex lh-1 text-reset p-0">
+                    <div class="d-none d-xl-block ps-2">
+                        <div class="mt-1 small">Workspace</div>
+                        <div class="mt-1 small text-secondary">
+                            <select class="form-select form-select-sm form-control-flush" disabled>
+                                <option value="1">Private</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-item d-none d-md-flex me-3">
+                {% include 'components/invitation.jinja' %}
+            </div> #}
+            <div class="nav-item dropdown d-none d-md-flex me-3">
+                {% include 'components/notifications.jinja' %}
+            </div>
+            <div class="nav-item">
+                <a href="{{ url_for('auth.logout') }}" class="nav-link px-0">
+                    <i class="icon bi bi-x-lg"></i>
+                </a>
+            </div>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-menu">
+            <div class="d-flex flex-column flex-md-row flex-fill align-items-stretch align-items-md-center">
+                <ul class="navbar-nav">
+                    <div class="nav-item me-3">
+                        <div class="d-flex lh-1 text-reset p-0">
+                            <a href="{{ url_for('main.index') }}"><span class="avatar avatar-sm"
+                                    style="background-image: url(https://api.dicebear.com/6.x/shapes/svg?seed={{ session['user_info']['username'] }})"></span></a>
+                            <div class="d-none d-xl-block ps-2">
+                                <div>{{ session['user_info']['name'] }}</div>
+                                <div class="mt-1 small text-secondary">{{ session['user_info']['organization'] }}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# <li class="nav-item">
+                        <a class="nav-link" href="./">
+                            <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                <i class="icon bi bi-house"></i>
+                            </span>
+                            <span class="nav-link-title">
+                                Home
+                            </span>
+                        </a>
+                    </li> #}
+                    {# <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown"
+                            data-bs-auto-close="outside" role="button" aria-expanded="false">
+                            <span class="nav-link-icon d-md-none d-lg-inline-block">
+                                <i class="icon bi bi-box"></i>
+                            </span>
+                            <span class="nav-link-title">
+                                Modules
+                            </span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <div class="dropdown-menu-columns">
+                                <div class="dropdown-menu-column">
+                                    <a class="dropdown-item" href="#">
+                                        AATH
+                                    </a>
+                                    <div class="dropend">
+                                        <a class="dropdown-item dropdown-toggle" href="#sidebar-authentication"
+                                            data-bs-toggle="dropdown" data-bs-auto-close="outside" role="button"
+                                            aria-expanded="false">
+                                            W3C
+                                        </a>
+                                        <div class="dropdown-menu">
+                                            <a href="#" class="dropdown-item">
+                                                vc-test-suite 1.1
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li> #}
+                </ul>
+            </div>
+        </div>
+    </div>
+</header>
