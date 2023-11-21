@@ -1,0 +1,25 @@
+---
+{{- with .Values.app }}
+{{- if .expose }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: {{ $.Values.namespace }}
+  name: "{{ .name }}"
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: "{{ .endpoint }}.{{ $.Values.domain }}"
+    http:
+      paths:
+      - backend:
+          service:
+            name: "{{ .name }}"
+            port:
+              number: {{ .port }}
+        path: /
+        pathType: ImplementationSpecific
+{{- else }}
+{{- end }}
+{{- end }}
