@@ -1,0 +1,43 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: test-harness
+  labels:
+    app: test-harness
+spec:
+  template:
+    metadata:
+      labels:
+        app: test-harness
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+        - name: test-harness
+          image: {{ image }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ALLURE_SERVER
+              value: {{ ALLURE_SERVER }}
+            - name: PROJECT_ID
+              value: {{ PROJECT_ID }}
+          envFrom:
+            - configMapRef:
+                name: allure-env
+          volumeMounts:
+            - mountPath: /test-suite/send_results.sh
+              name: send-results
+              subPath: send_results.sh
+          tty: true
+      volumes:
+        - name: send-results
+          configMap:
+            defaultMode: 0777
+            name: allure-send-results
+            items:
+              - key: send_results.sh
+                path: send_results.sh
+      restartPolicy: Never
+      concurrencyPolicy: Forbid
+  ttlSecondsAfterFinished: 1
+  backoffLimit: 0

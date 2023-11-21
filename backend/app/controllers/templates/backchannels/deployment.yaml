@@ -1,0 +1,52 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ name }}
+  labels:
+    app: {{ name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ name }}
+  template:
+    metadata:
+      labels:
+        app: {{ name }}
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+        - name: {{ name }}
+          image: {{ image }}
+          imagePullPolicy: "IfNotPresent"
+          ports:
+          {% for port in ports %}
+            - containerPort: {{ port.port }}
+          {% endfor %}
+          entrypoint: {{ entrypoint }}
+          tty: true
+          env:
+            - name: AGENT_NAME
+              value: {{ agent_name }}
+            - name: TAILS_SERVER_URL
+              value: {{ tails_server_url }}
+            - name: LEDGER_URL
+              value: {{ ledger_server_url }}
+            - name: AGENT_PUBLIC_ENDPOINT
+              value: https://{{ agent_public_endpoint }}
+            - name: DOCKERHOST
+              value: localhost
+{% if framework == "acapy" %}
+          volumeMounts:
+            - mountPath: /data-mount/plugin-config.yml
+              name: "plugin-config"
+              subPath: plugin-config.yml
+      volumes:
+        - name: "plugin-config"
+          configMap:
+            name: "backchannel-config"
+            items:
+              - key: plugin-config.yml
+                path: plugin-config.yml
+{% endif %}

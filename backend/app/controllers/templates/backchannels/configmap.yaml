@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "backchannel-config"
+data:
+  plugin-config.yml: |
+    version: '2'
+
+    # http_uniresolver:
+    #   endpoint:
+    #     "{{ uniresolver_endpoint }}"
+    #   methods:
+    #     - sov

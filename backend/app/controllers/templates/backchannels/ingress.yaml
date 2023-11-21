@@ -1,0 +1,23 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ name }}
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: {{ public_endpoint }}
+    http:
+      paths:
+{% for port in ports %}
+{% if port.ingress %}
+      - backend:
+          service:
+            name: {{ name }}
+            port:
+              number: {{ port.port }}
+        path: /
+        pathType: ImplementationSpecific
+{% endif %}
+{% endfor %}

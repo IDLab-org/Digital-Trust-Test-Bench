@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: allure
+  labels:
+    app: allure
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: allure
+  template:
+    metadata:
+      labels:
+        app: allure
+    spec:
+      containers:
+        - name: allure
+          image: frankescobar/allure-docker-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5050
+          envFrom:
+            - configMapRef:
+                name: allure-env
+      #     volumeMounts:
+      #       - mountPath: /app/projects
+      #         name: projects
+      # volumes:
+      #   - name: projects

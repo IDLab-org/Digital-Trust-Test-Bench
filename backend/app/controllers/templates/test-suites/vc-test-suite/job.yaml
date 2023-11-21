@@ -1,0 +1,63 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: vc-test-suite
+  labels:
+    app: vc-test-suite
+spec:
+  template:
+    metadata:
+      labels:
+        app: vc-test-suite
+    spec:
+      terminationGracePeriodSeconds: 1
+      containers:
+        - name: vc-test-suite
+          image: {{ image }}
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: ALLURE_SERVER
+              value: {{ ALLURE_SERVER }}
+            - name: PROJECT_ID
+              value: {{ PROJECT_ID }}
+          envFrom:
+            - configMapRef:
+                name: allure-env
+          volumeMounts:
+            - mountPath: /test-suite/config.json
+              name: config
+              subPath: config.json
+            - mountPath: /test-suite/run_test_suite.sh
+              name: run-test-suite
+              subPath: run_test_suite.sh
+            - mountPath: /test-suite/send_results.sh
+              name: send-results
+              subPath: send_results.sh
+          tty: true
+          command: [ "./run_test_suite.sh" ]
+      volumes:
+        - name: config
+          configMap:
+            name: vc-test-suite
+            items:
+              - key: config.json
+                path: config.json
+        - name: run-test-suite
+          configMap:
+            defaultMode: 0777
+            name: vc-test-suite
+            items:
+              - key: run_test_suite.sh
+                path: run_test_suite.sh
+        - name: send-results
+          configMap:
+            defaultMode: 0777
+            name: allure-send-results
+            items:
+              - key: send_results.sh
+                path: send_results.sh
+      restartPolicy: Never
+      concurrencyPolicy: Forbid
+  ttlSecondsAfterFinished: 1
+  backoffLimit: 0
