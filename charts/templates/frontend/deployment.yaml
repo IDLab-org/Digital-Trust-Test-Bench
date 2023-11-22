@@ -21,7 +21,7 @@ spec:
       - name: regcred
       containers:
       - name: {{ .label }}
-        image: "{{ .image }}:{{ .tag }}"
+        image: {{ .image }}
         imagePullPolicy: Always
         ports:
         - containerPort: {{ .port }}

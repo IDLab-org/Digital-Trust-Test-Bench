@@ -3,36 +3,33 @@ namespace: dtt-applications
 
 docs:
   label: documentation
-  image: idlaborg/dtt-docs
-  tag: CHANGE_ME
+  image: idlaborg/dtt-docs:CHANGE_ME
   load_balancer_ip: 10.0.20.226
   port: 8000
-  endpoint: CHANGE_ME
+  # endpoint: CHANGE_ME
 
 backend:
   label: backend
-  image: idlaborg/dtt-backend
-  tag: CHANGE_ME
+  image: idlaborg/dtt-backend:CHANGE_ME
   load_balancer_ip: 10.0.20.225
   port: 8000
-  endpoint: CHANGE_ME
+  # endpoint: CHANGE_ME
   environment:
     VERSION: development
     DTT_FRONTEND_URL: CHANGE_ME
-    SECRET_KEY: '${{ secrets.BACKEND_SECRET_KEY }}'
-    OAUTH_GITHUB_CLIENT_ID: '${{ secrets.OAUTH_GITHUB_CLIENT_ID_DEV }}'
-    OAUTH_GITHUB_CLIENT_SECRET: '${{ secrets.OAUTH_GITHUB_CLIENT_SECRET_DEV }}'
+    SECRET_KEY: CHANGE_ME
+    OAUTH_GITHUB_CLIENT_ID: CHANGE_ME
+    OAUTH_GITHUB_CLIENT_SECRET: CHANGE_ME
 
 frontend:
   label: frontend
-  image: idlaborg/dtt-frontend
-  tag: CHANGE_ME
+  image: idlaborg/dtt-frontend:CHANGE_ME
   load_balancer_ip: 10.0.20.224
   port: 5000
-  endpoint: CHANGE_ME
+  # endpoint: CHANGE_ME
   environment:
     REDIS_URL: redis://redis.dtt-storage:6379
     POSTGRES_URL: postgresql://postgres.dtt-storage:5432
     DTT_BACKEND_URL: http://dtt-backend:8000
     VERSION: CHANGE_ME
-    SECRET_KEY: '${{ secrets.FRONTEND_SECRET_KEY }}'
+    SECRET_KEY: CHANGE_ME
