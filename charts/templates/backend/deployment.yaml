@@ -1,35 +1,35 @@
 ---
-{{- with .Values.deployment }}
+{{- with .Values.backend }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: {{ $.Values.namespace }}
-  name: {{ $.Values.app_name }}
+  name: {{ .label }}
   labels:
-    app: {{ $.Values.app_name }}
+    app: {{ .label }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ $.Values.app_name }}
+      app: {{ .label }}
   template:
     metadata:
       labels:
-        app: {{ $.Values.app_name }}
+        app: {{ .label }}
     spec:
       serviceAccountName: {{ $.Values.namespace }}
       automountServiceAccountToken: true
       imagePullSecrets:
       - name: regcred
       containers:
-      - name: {{ $.Values.app_name }}
-        image: "{{ .image.name }}:{{ .image.tag }}"
+      - name: {{ .label }}
+        image: "{{ .image }}:{{ .tag }}"
         imagePullPolicy: Always
         ports:
         - containerPort: {{ .port }}
         envFrom:
         - secretRef:
-            name: {{ $.Values.app_name }}-env
+            name: {{ .label }}-env
         - configMapRef:
-            name: {{ $.Values.app_name }}-env
+            name: {{ .label }}-env
 {{- end }}

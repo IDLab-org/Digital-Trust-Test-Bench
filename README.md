@@ -5,13 +5,13 @@ Install required packages
 - tmux
 - kubectl
 ```
-apt update
+add-apt-repository ppa:deadsnakes/ppa
+sudo apt-get update
 apt install -y \
-    python3 \
-    python3-venv \
-    tmux \
-    kubectl
+    python3.11 \
+    tmux
 ```
+[kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl)
 Clone and open this repo in a terminal
 ```
 git clone git@github.com:IDLab-org/Digital-Trust-Test-Bench.git
@@ -19,7 +19,7 @@ cd Digital-Trust-Test-Bench
 ```
 Load the dtt k8s environment and test the k8s connectivity
 ```
-export KUBECONFIG=~/.kube/your_configuration_file.conf
+export KUBECONFIG=~/.kube/dtt-dev.conf
 kubectl get nodes
 ```
 You should have a response like the following:

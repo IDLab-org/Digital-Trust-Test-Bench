@@ -1,22 +1,22 @@
 ---
-{{- with .Values.ingress }}
+{{- with .Values.frontend }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   namespace: {{ $.Values.namespace }}
-  name: {{ $.Values.app_name }}
+  name: {{ .label }}
   annotations:
     kubernetes.io/ingress.class: nginx
 spec:
   rules:
-  - host: "{{ .subdomain }}.{{ .domain }}"
+  - host: "{{ .endpoint }}"
     http:
       paths:
       - backend:
           service:
-            name: {{ $.Values.app_name }}
+            name: {{ .label }}
             port:
-              number: {{ $.Values.service.port }}
+              number: {{ .port }}
         path: /
         pathType: ImplementationSpecific
 {{- end }}

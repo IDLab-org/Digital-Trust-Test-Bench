@@ -7,6 +7,7 @@ on:
       - "DTT-*"
 
 env:
+  DTT_FRONTEND_URL: http://dtt-dev.internal.idlab.org:5000
   DOCS_DEV_TAG: idlaborg/dtt-docs:dev-${{ github.run_id }}
   BACKEND_DEV_TAG: idlaborg/dtt-backend:dev-${{ github.run_id }}
   FRONTEND_DEV_TAG: idlaborg/dtt-frontend:dev-${{ github.run_id }}
