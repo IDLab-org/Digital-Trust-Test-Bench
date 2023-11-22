@@ -1,24 +1,24 @@
 ---
-{{- with .Values.app }}
+{{- with .Values.docs }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: {{ $.Values.namespace }}
-  name: "{{ .name }}"
+  name: "{{ .label }}"
   labels:
-    app: "{{ .name }}"
+    app: "{{ .label }}"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "{{ .name }}"
+      app: "{{ .label }}"
   template:
     metadata:
       labels:
-        app: "{{ .name }}"
+        app: "{{ .label }}"
     spec:
       containers:
-        - name: "{{ .name }}"
+        - name: "{{ .label }}"
           image: "{{ .image }}:{{ .tag }}"
           imagePullPolicy: Always
           ports:
