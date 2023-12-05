@@ -5,7 +5,7 @@ IMAGE_TAG=latest
 # AATH
 AATH_REPO=https://github.com/hyperledger/aries-agent-test-harness.git
 AATH_DIRECTORY=$PWD/aries-agent-test-harness
-# git clone $AATH_REPO
+git clone $AATH_REPO
 
 cd $AATH_DIRECTORY/aries-backchannels
 IMAGE_NAME=$BASE_IMAGE_NAME/aath-backchannel-acapy

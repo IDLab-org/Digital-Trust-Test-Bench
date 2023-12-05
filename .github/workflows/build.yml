@@ -6,14 +6,10 @@ on:
       - "main"
       - "DTT-*"
 
-env:
-  DTT_FRONTEND_URL: http://dtt-dev.internal.idlab.org:5000
-  DOCS_DEV_IMAGE: idlaborg/dtt-docs:dev-${{ github.run_id }}
-  BACKEND_DEV_IMAGE: idlaborg/dtt-backend:dev-${{ github.run_id }}
-  FRONTEND_DEV_IMAGE: idlaborg/dtt-frontend:dev-${{ github.run_id }}
+# env:
 
 jobs:
-  build:
+  build-modules:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,65 +19,6 @@ jobs:
           docker login \
             -u ${{ secrets.DOCKERHUB_USERNAME }} \
             -p ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Docker Build
+      - name: Run Build Script
         run: |
-          docker build ./docs --tag ${{ env.DOCS_DEV_IMAGE }}
-          docker build ./backend --tag ${{ env.BACKEND_DEV_IMAGE }}
-          docker build ./frontend --tag ${{ env.FRONTEND_DEV_IMAGE }}
-      - name: Docker Push
-        run: |
-          docker push ${{ env.DOCS_DEV_IMAGE }}
-          docker push ${{ env.BACKEND_DEV_IMAGE }}
-          docker push ${{ env.FRONTEND_DEV_IMAGE }}
-
-  deploy:
-    needs: [build]
-    runs-on: self-hosted
-    steps:
-      - uses: chrnorm/deployment-action@v2
-        name: Create GitHub deployment
-        id: deployment
-        with:
-          token: '${{ github.token }}'
-          environment: development
-      - name: Update deployment status
-        uses: chrnorm/deployment-status@v2
-        if: always()
-        with:
-          token: '${{ secrets.GITHUB_TOKEN }}'
-          state: ${{ job.status }}
-          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Create kube config
-        run: |
-          mkdir -p $HOME/.kube/
-          echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-          chmod 600 $HOME/.kube/config
-      - name: Install helm
-        run: |
-          curl -LO https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz
-          tar -zxvf helm-v3.8.0-linux-amd64.tar.gz
-          sudo mv linux-amd64/helm /usr/local/bin/helm
-          helm version
-      - name: Lint helm charts
-        run: helm lint ./charts/
-      - name: Deploy
-        run: |
-          helm upgrade --install --atomic --timeout 2m \
-            dtt-applications ./charts/ -f ./charts/values.yaml \
-            --namespace dtt-applications --create-namespace \
-            --set backend.image=${{ env.BACKEND_DEV_IMAGE }} \
-            --set backend.environment.SECRET_KEY=${{ secrets.BACKEND_SECRET_KEY }} \
-            --set backend.environment.DTT_FRONTEND_URL=${{ env.DTT_FRONTEND_URL }} \
-            --set backend.environment.OAUTH_GITHUB_CLIENT_ID=${{ secrets.OAUTH_GITHUB_CLIENT_ID_DEV }} \
-            --set backend.environment.OAUTH_GITHUB_CLIENT_SECRET=${{ secrets.OAUTH_GITHUB_CLIENT_SECRET_DEV }} \
-            --set frontend.environment.VERSION=dev-${{ github.run_id }} \
-            --set frontend.environment.SECRET_KEY=${{ secrets.FRONTEND_SECRET_KEY }}
-      - name: Update deployment status
-        uses: chrnorm/deployment-status@v2
-        if: always()
-        with:
-          token: '${{ secrets.GITHUB_TOKEN }}'
-          state: ${{ job.status }}
-          deployment-id: ${{ steps.deployment.outputs.deployment_id }}
+          cd modules && ./build.sh
