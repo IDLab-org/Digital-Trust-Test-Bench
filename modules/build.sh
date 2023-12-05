@@ -1,6 +1,7 @@
 #! /bin/bash
+ROOT_DIR=$PWD
 BASE_IMAGE_NAME=idlaborg
-IMAGE_TAG=latest
+IMAGE_TAG=`date -I`
 
 # AATH
 AATH_REPO=https://github.com/hyperledger/aries-agent-test-harness.git

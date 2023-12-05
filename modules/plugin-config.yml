@@ -1,0 +1,7 @@
+version: '2'
+
+# http_uniresolver:
+#   endpoint:
+#     "{{ uniresolver_endpoint }}"
+#   methods:
+#     - sov

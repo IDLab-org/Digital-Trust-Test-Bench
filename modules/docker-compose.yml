@@ -1,0 +1,80 @@
+version: "3"
+
+services:
+  aath-backchannel-vcx:
+    image: idlaborg/aath-backchannel-vcx:latest
+    entrypoint: ["./aries-vcx-backchannel"]
+    ports:
+      - 19020:9020
+    environment:
+      RUST_BACKTRACE: 1
+      AGENT_NAME: VCX Backchannel
+      TAILS_SERVER_URL: ${TAILS_SERVER_URL}
+      LEDGER_URL: ${LEDGER_URL}
+      AGENT_PUBLIC_ENDPOINT: http://aath-backchannel-vcx:9020
+      DOCKERHOST: localhost
+  # aath-backchannel-afj:
+  #   image: idlaborg/aath-backchannel-afj
+  #   entrypoint: ["yarn", "ts-node", "src/index.ts"]
+  #   ports:
+  #     - 29020:9020
+  #     - 29021:9021
+  #     - 29022:9022
+  #   environment:
+  #     AGENT_NAME: AFJ Backchannel
+  #     TAILS_SERVER_URL: ${TAILS_SERVER_URL}
+  #     LEDGER_URL: ${LEDGER_URL}
+  #     AGENT_PUBLIC_ENDPOINT: http://aath-backchannel-afj:9020
+  #     DOCKERHOST: localhost
+  # aath-backchannel-acapy:
+  #   image: idlaborg/aath-backchannel-acapy
+  #   entrypoint: ["python", "acapy/acapy_backchannel.py"]
+  #   ports:
+  #     - 38020:8020
+  #     - 38021:8021
+  #     - 38022:8022
+  #     - 38023:8023
+  #     - 38024:8024
+  #   volumes:
+  #     - ./plugin-config.yml:/data-mount/plugin-config.yml
+  #   environment:
+  #     AGENT_NAME: ACAPY Backchannel
+  #     TAILS_SERVER_URL: ${TAILS_SERVER_URL}
+  #     LEDGER_URL: ${LEDGER_URL}
+  #     AGENT_PUBLIC_ENDPOINT: http://aath-backchannel-acapy:8020
+  #     DOCKERHOST: localhost
+  # aath-backchannel-afgo:
+  #   image: idlaborg/aath-backchannel-afgo
+  #   entrypoint: ["python", "afgo/afgo_backchannel.py"]
+  #   ports:
+  #     - 48020:8020
+  #     - 48021:8021
+  #     - 48022:8022
+  #     - 48023:8023
+  #   environment:
+  #     AGENT_NAME: AFGO Backchannel
+  #     TAILS_SERVER_URL: ${TAILS_SERVER_URL}
+  #     LEDGER_URL: ${LEDGER_URL}
+  #     AGENT_PUBLIC_ENDPOINT: http://aath-backchannel-afgo:8022
+  #     DOCKERHOST: localhost
+  # aath-backchannel-dotnet:
+  #   image: idlaborg/aath-backchannel-dotnet
+  #   entrypoint: ["dotnet", "DotNet.Backchannel.Master.dll"]
+  #   ports:
+  #     - 59020:9020
+  #   environment:
+  #     AGENT_NAME: Dotnet Backchannel
+  #     TAILS_SERVER_URL: ${TAILS_SERVER_URL}
+  #     LEDGER_URL: ${LEDGER_URL}
+  #     AGENT_PUBLIC_ENDPOINT: http://aath-backchannel-dotnet:9020
+  #     DOCKERHOST: localhost
+  # aath-backchannel-findy:
+  #   image: idlaborg/aath-backchannel-findy
+  #   ports:
+  #     - 68888:8888
+  #   environment:
+  #     AGENT_NAME: Findy Backchannel
+  #     TAILS_SERVER_URL: ${TAILS_SERVER_URL}
+  #     LEDGER_URL: ${LEDGER_URL}
+  #     AGENT_PUBLIC_ENDPOINT: http://aath-backchannel-findy:8888
+  #     DOCKERHOST: localhost
